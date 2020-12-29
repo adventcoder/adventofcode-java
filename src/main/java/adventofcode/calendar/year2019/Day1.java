@@ -10,7 +10,7 @@ public class Day1 extends AbstractDay {
     }
 
     @Override
-    public void solve(String input, Consumer<String> answers) {
+    public void solve(String input, Consumer<Object> answers) {
         int answer1 = 0;
         int answer2 = 0;
         for (String line : input.split("\n")) {
@@ -22,7 +22,7 @@ public class Day1 extends AbstractDay {
                 fuel = fuel / 3 - 2;
             } while (fuel > 0);
         }
-        answers.accept(Integer.toString(answer1));
-        answers.accept(Integer.toString(answer2));
+        answers.accept(answer1);
+        answers.accept(answer2);
     }
 }

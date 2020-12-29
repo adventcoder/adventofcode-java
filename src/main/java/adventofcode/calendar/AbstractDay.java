@@ -25,7 +25,7 @@ public abstract class AbstractDay {
         return StringIO.read(url);
     }
 
-    public abstract void solve(String input, Consumer<String> answers);
+    public abstract void solve(String input, Consumer<Object> answers);
 
     public void run() throws IOException {
         String input = getInput();
@@ -35,7 +35,7 @@ public abstract class AbstractDay {
         printer.postSolve();
     }
 
-    private static class Printer implements Consumer<String> {
+    private static class Printer implements Consumer<Object> {
         private int partNumber;
         private long startTime;
         private long totalAnswerTime;
@@ -47,7 +47,7 @@ public abstract class AbstractDay {
         }
 
         @Override
-        public void accept(String answer) {
+        public void accept(Object answer) {
             long answerTime = System.nanoTime() - startTime;
             totalAnswerTime += answerTime;
             partNumber += 1;
@@ -60,8 +60,9 @@ public abstract class AbstractDay {
             System.out.println("Total time taken: " + String.format("%.03fms", totalAnswerTime * 1e-6));
         }
 
-        private void printAnswer(String answer, long nanoTime) {
-            String[] lines = answer.split("\n");
+        private void printAnswer(Object answer, long nanoTime) {
+            String answerString = answer == null ? "No answer" : answer.toString();
+            String[] lines = answerString.split("\n");
             for (int i = 0; i < lines.length; i++) {
                 if (i == 0) {
                     System.out.printf("Part %d: ", partNumber);
