@@ -2,14 +2,14 @@ package adventofcode.calendar.year2019;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Scanner;
 
-public class IntcodeVM {
+public class IntComputer {
     private final BigInteger[] originalMem;
     private BigInteger[] mem = new BigInteger[0];
     private int ip = -1;
+    private boolean yielded = false;
 
-    public IntcodeVM(String program) {
+    public IntComputer(String program) {
         originalMem = parse(program);
         reset();
     }
@@ -46,17 +46,37 @@ public class IntcodeVM {
         ip = 0;
     }
 
-    public void join() {
-        while (!halted()) {
-            step();
-        }
-    }
-
     public boolean halted() {
         return ip < 0;
     }
 
+    public boolean waitingForInput() {
+        return yielded && getOp() == 3;
+    }
+
+    public boolean waitingForOutput() {
+        return yielded && getOp() == 4;
+    }
+
+    public BigInteger resume() {
+        if (!waitingForOutput()) throw new IllegalStateException();
+        BigInteger output = getParameter(1);
+        ip += 2;
+        yielded = false;
+        return output;
+    }
+
+    public void resume(BigInteger input) {
+        if (!waitingForInput()) throw new IllegalStateException();
+        set(getParameterAddress(1), input);
+        ip += 2;
+        yielded = false;
+    }
+
     public void step() {
+        if (yielded) {
+            throw new IllegalStateException("yielded");
+        }
         switch (getOp()) {
         case 1: // add
             set(getParameterAddress(3), getParameter(1).add(getParameter(2)));
@@ -67,12 +87,10 @@ public class IntcodeVM {
             ip += 4;
             break;
         case 3: // input
-            set(getParameterAddress(1), new Scanner(System.in).nextBigInteger());
-            ip += 2;
+            yielded = true;
             break;
         case 4: // output
-            System.out.println(getParameter(1));
-            ip += 2;
+            yielded = true;
             break;
         case 5: // jump-if-true
             if (!getParameter(1).equals(BigInteger.ZERO)) {
