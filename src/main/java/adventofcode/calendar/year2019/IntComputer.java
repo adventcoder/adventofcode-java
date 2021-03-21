@@ -7,7 +7,6 @@ public class IntComputer {
     private final BigInteger[] originalMem;
     private BigInteger[] mem = new BigInteger[0];
     private int ip = -1;
-    private boolean yielded = false;
 
     public IntComputer(String program) {
         originalMem = parse(program);
@@ -50,33 +49,15 @@ public class IntComputer {
         return ip < 0;
     }
 
-    public boolean waitingForInput() {
-        return yielded && getOp() == 3;
+    protected BigInteger input() {
+        return null;
     }
 
-    public boolean waitingForOutput() {
-        return yielded && getOp() == 4;
+    protected boolean output(BigInteger value) {
+        return false;
     }
 
-    public BigInteger resume() {
-        if (!waitingForOutput()) throw new IllegalStateException();
-        BigInteger output = getParameter(1);
-        ip += 2;
-        yielded = false;
-        return output;
-    }
-
-    public void resume(BigInteger input) {
-        if (!waitingForInput()) throw new IllegalStateException();
-        set(getParameterAddress(1), input);
-        ip += 2;
-        yielded = false;
-    }
-
-    public void step() {
-        if (yielded) {
-            throw new IllegalStateException("yielded");
-        }
+    public boolean step() {
         switch (getOp()) {
         case 1: // add
             set(getParameterAddress(3), getParameter(1).add(getParameter(2)));
@@ -87,10 +68,14 @@ public class IntComputer {
             ip += 4;
             break;
         case 3: // input
-            yielded = true;
+            BigInteger value = input();
+            if (value == null) return false;
+            set(getParameterAddress(1), value);
+            ip += 2;
             break;
         case 4: // output
-            yielded = true;
+            if (!output(getParameter(1))) return false;
+            ip += 2;
             break;
         case 5: // jump-if-true
             if (!getParameter(1).equals(BigInteger.ZERO)) {
@@ -120,6 +105,7 @@ public class IntComputer {
         default:
             throw new RuntimeException();
         }
+        return true;
     }
 
     private int getOp() {

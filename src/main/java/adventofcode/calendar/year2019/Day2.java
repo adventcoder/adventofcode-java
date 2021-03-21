@@ -22,6 +22,10 @@ public class Day2 extends AbstractDay {
         Trinomial[] mem = parse(program);
         mem[1] = noun;
         mem[2] = verb;
+        // We don't start at zero since the first instruction would need us to read memory at variable memory addresses.
+        // In the actual input the first 4 instructions are just used for setting up a palette of values to add or
+        // multiply with, and the actual accumulation of the output doesn't start until after that, so we don't have to
+        // start the computation until after that.
         for (int ip = 16; mem[ip].intValue() != 99; ip += 4) {
             int op = mem[ip].intValue();
             int a = mem[ip + 1].intValue();

@@ -32,4 +32,18 @@ public class MoreMath {
         if (D[0] != 1) throw new ArithmeticException(a + " not invertible mod " + m);
         return floorMod(D[1], m);
     }
+
+    public static int powMod(int a, int n, int m) {
+        if (n < 0) {
+            a = modInverse(a, m);
+            n = -n;
+        }
+        int b = 1;
+        while (n != 0) {
+            if (n % 2 == 1) a = Math.floorMod(a * a, m);
+            b = Math.floorMod(b * a, m);
+            n /= 2;
+        }
+        return b;
+    }
 }

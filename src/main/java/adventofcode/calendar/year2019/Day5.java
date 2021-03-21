@@ -18,25 +18,36 @@ public class Day5 extends AbstractDay {
     }
 
     public static class Terminal extends IntComputer {
+        private Integer systemId;
+        private Integer lastOutput;
+        private int testCount;
+
         public Terminal(String program) {
             super(program);
         }
 
+        @Override
+        protected BigInteger input() {
+            return BigInteger.valueOf(systemId);
+        }
+
+        @Override
+        protected boolean output(BigInteger value) {
+            if (lastOutput != null) {
+                testCount++;
+                System.out.println("Test " + testCount + ": " + (lastOutput == 0 ? "PASS" : "FAIL"));
+            }
+            lastOutput = value.intValue();
+            return true;
+        }
+
         public Integer run(int systemId) {
-            Integer lastOutput = null;
-            int testCount = 0;
             reset();
+            this.systemId = systemId;
+            lastOutput = null;
+            testCount = 0;
             while (!halted()) {
                 step();
-                if (waitingForInput()) {
-                    resume(BigInteger.valueOf(systemId));
-                } else if (waitingForOutput()) {
-                    if (lastOutput != null) {
-                        testCount++;
-                        System.out.println("Test " + testCount + ": " + (lastOutput == 0 ? "PASS" : "FAIL"));
-                    }
-                    lastOutput = resume().intValue();
-                }
             }
             return lastOutput;
         }
