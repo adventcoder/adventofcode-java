@@ -3,7 +3,7 @@ package adventofcode.utils;
 import static java.lang.Math.abs;
 import static java.lang.Math.floorMod;
 
-public class MoreMath {
+public class DiscreteMath {
     public static int sgn(int x) {
         return ((-x) >>> 31) - (x >>> 31);
     }
