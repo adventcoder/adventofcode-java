@@ -4,18 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StringIO {
-    public static String read(URL url) throws IOException {
-        try (InputStream in = url.openStream()) {
-            return read(in);
-        }
-    }
-
     public static String read(InputStream in) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         List<String> lines = new ArrayList<>();
