@@ -1,9 +1,6 @@
 package adventofcode.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,5 +15,14 @@ public class StringIO {
             lines.add(line);
         }
         return String.join("\n", lines);
+    }
+
+    public static void write(OutputStream out, String string) throws IOException {
+        Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+        for (String line : string.split("\n")) {
+            writer.write(line);
+            writer.write(System.lineSeparator());
+        }
+        writer.flush();
     }
 }
