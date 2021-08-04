@@ -2,12 +2,11 @@ package adventofcode.calendar.year2019.day3;
 
 import adventofcode.framework.Session;
 import adventofcode.framework.Solver;
+import adventofcode.utils.Enumerable;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import static adventofcode.utils.Functions.min;
 
 public class Part1 extends Solver<Integer> {
     public static void main(String[] args) throws IOException {
@@ -26,7 +25,7 @@ public class Part1 extends Solver<Integer> {
             }
         }
         if (crossPoints == null) return null;
-        return min(Point::distanceFromOrigin, crossPoints);
+        return Enumerable.of(crossPoints).min(Point::distanceFromOrigin);
     }
     
     private Set<Point> getPoints(String line) {

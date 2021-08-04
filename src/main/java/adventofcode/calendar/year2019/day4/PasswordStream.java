@@ -1,15 +1,17 @@
 package adventofcode.calendar.year2019.day4;
 
+import adventofcode.utils.IntMath;
+
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 public class PasswordStream {
-    private static final int[] powers = { 100000, 10000, 1000, 100, 10, 1 };
-    private static final int firstPassword = 100000;
-    private static final int lastPassword = 999999;
+    private static final int length = 6;
+    private static final int firstPassword = IntMath.pow10(length - 1);
+    private static final int lastPassword = IntMath.pow10(length) - 1;
 
     private static int getDigit(int password, int i) {
-        return password / powers[i] % 10;
+        return password / IntMath.pow10(i) % 10;
     }
 
     public static PasswordStream range(String input) {
@@ -31,7 +33,7 @@ public class PasswordStream {
 
     public PasswordStream withIncreasingDigits() {
         return filter((password) -> {
-            for (int i = 0; i < powers.length - 1; i++) {
+            for (int i = 0; i < length; i++) {
                 if (getDigit(password, i) > getDigit(password, i + 1)) {
                     return false;
                 }
@@ -42,7 +44,7 @@ public class PasswordStream {
 
     public PasswordStream withDigitPair() {
         return filter((password) -> {
-            for (int i = 0; i < powers.length - 1; i++) {
+            for (int i = 0; i < length - 1; i++) {
                 if (getDigit(password, i) == getDigit(password, i + 1)) {
                     return true;
                 }
@@ -53,10 +55,10 @@ public class PasswordStream {
 
     public PasswordStream withDigitPairExactly() {
         return filter((password) -> {
-            for (int i = 0; i < powers.length - 1; i++) {
+            for (int i = 0; i < length - 1; i++) {
                 if (getDigit(password, i) == getDigit(password, i + 1)
                         && (i == 0 || getDigit(password, i - 1) != getDigit(password, i))
-                        && (i == powers.length - 2 || getDigit(password, i + 2) != getDigit(password, i))) {
+                        && (i == length - 2 || getDigit(password, i + 2) != getDigit(password, i))) {
                     return true;
                 }
             }

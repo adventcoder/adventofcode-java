@@ -2,11 +2,10 @@ package adventofcode.calendar.year2019.day3;
 
 import adventofcode.framework.Session;
 import adventofcode.framework.Solver;
+import adventofcode.utils.Enumerable;
 
 import java.io.IOException;
 import java.util.*;
-
-import static adventofcode.utils.Functions.min;
 
 public class Part2 extends Solver<Integer> {
     public static void main(String[] args) throws IOException {
@@ -25,7 +24,8 @@ public class Part2 extends Solver<Integer> {
             }
         }
         if (crossPoints == null) return null;
-        return min(crossPoints::get, crossPoints.keySet());
+        return Enumerable.of(crossPoints.keySet()).min(crossPoints::get);
+        // return min(crossPoints::get, crossPoints.keySet());
     }
 
     private Map<Point, Integer> getPoints(String line) {
