@@ -25,4 +25,8 @@ public class IntMath {
         n |= n >>> 16;
         return n;
     }
+
+    public static int signum(int n) {
+        return ((-n) >>> 31) - (n >>> 31);
+    }
 }
