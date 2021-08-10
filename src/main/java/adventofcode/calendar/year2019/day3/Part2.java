@@ -25,7 +25,6 @@ public class Part2 extends Solver<Integer> {
         }
         if (crossPoints == null) return null;
         return Enumerable.of(crossPoints.keySet()).min(crossPoints::get);
-        // return min(crossPoints::get, crossPoints.keySet());
     }
 
     private Map<Point, Integer> getPoints(String line) {
