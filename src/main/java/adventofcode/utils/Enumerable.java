@@ -59,7 +59,7 @@ public interface Enumerable<T> extends Iterable<T> {
         return collector.finisher().apply(acc);
     }
 
-    default <U> U reduce(Function<? super T, ? extends U> f, U identity, BinaryOperator<U> op) {
+    default <U> U reduce(Function<? super T, ? extends U> f, BinaryOperator<U> op, U identity) {
         class Reducer implements Consumer<T> {
             U value = identity;
 
@@ -73,7 +73,25 @@ public interface Enumerable<T> extends Iterable<T> {
         return reducer.value;
     }
 
-    default int reduceAsInt(ToIntFunction<? super T> f, int identity, IntBinaryOperator op) {
+    default <U> U reduce(Function<? super T, ? extends U> f, BinaryOperator<U> op) {
+        class Reducer implements Consumer<T> {
+            U value = null;
+
+            @Override
+            public void accept(T t) {
+                if (value == null) {
+                    Objects.requireNonNull(f.apply(t));
+                } else {
+                    value = op.apply(value, Objects.requireNonNull(f.apply(t)));
+                }
+            }
+        }
+        Reducer reducer = new Reducer();
+        forEach(reducer);
+        return reducer.value;
+    }
+
+    default int reduceAsInt(ToIntFunction<? super T> f, IntBinaryOperator op, int identity) {
         class Reducer implements Consumer<T> {
             int value = identity;
 
@@ -88,26 +106,28 @@ public interface Enumerable<T> extends Iterable<T> {
     }
 
     default <U extends Comparable<U>> U min(Function<? super T, ? extends U> f) {
-        return reduce(f, null, (a, b) -> a == null || a.compareTo(b) > 0 ? b : a);
+        return reduce(f, (a, b) -> a == null || b.compareTo(a) < 0 ? b : a, null);
     }
 
     default <U extends Comparable<U>> U max(Function<? super T, ? extends U> f) {
-        return reduce(f, null, (a, b) -> a == null || a.compareTo(b) < 0 ? b : a);
+        return reduce(f, (a, b) -> a == null || b.compareTo(a) > 0 ? b : a, null);
     }
 
     default <U extends Comparable<U>> T argMin(Function<? super T, ? extends U> f) {
-        return reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), null, (a, b) -> a == null || a.getValue().compareTo(b.getValue()) > 0 ? b : a).getKey();
+        AbstractMap.SimpleEntry<T, U> pair = reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), (a, b) -> b.getValue().compareTo(a.getValue()) < 0 ? b : a);
+        return pair == null ? null : pair.getKey();
     }
 
     default <U extends Comparable<U>> T argMax(Function<? super T, ? extends U> f) {
-        return reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), null, (a, b) -> a == null || a.getValue().compareTo(b.getValue()) > 0 ? b : a).getKey();
+        AbstractMap.SimpleEntry<T, U> pair = reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), (a, b) -> b.getValue().compareTo(a.getValue()) > 0 ? b : a);
+        return pair == null ? null : pair.getKey();
     }
 
     default int sum(ToIntFunction<? super T> f) {
-        return reduceAsInt(f, 0, Integer::sum);
+        return reduceAsInt(f, Integer::sum, 0);
     }
 
     default int product(ToIntFunction<? super T> f) {
-        return reduceAsInt(f, 1, (a, b) -> a * b);
+        return reduceAsInt(f, (a, b) -> a * b, 1);
     }
 }

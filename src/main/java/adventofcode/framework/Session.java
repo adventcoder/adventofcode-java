@@ -37,10 +37,6 @@ public class Session {
         this.insecure = insecure;
     }
 
-    public <T> void printAnswer(int year, int day, Solver<T> solver) throws IOException {
-        solver.printAnswer(getInput(year, day));
-    }
-
     public String getInput(int year, int day) throws IOException {
         File sessionDir = new File(System.getProperty("java.io.tmpdir"), "session-" + session);
         if (!sessionDir.exists() && !sessionDir.mkdir()) {
@@ -92,7 +88,6 @@ public class Session {
     private void setInsecure(HttpsURLConnection conn) throws IOException {
         try {
             conn.setSSLSocketFactory(getInsecureSSLContext().getSocketFactory());
-            conn.setHostnameVerifier((hostName, sslSession) -> true);
         } catch (GeneralSecurityException e) {
             throw new IOException("Could not make insecure connection", e);
         }

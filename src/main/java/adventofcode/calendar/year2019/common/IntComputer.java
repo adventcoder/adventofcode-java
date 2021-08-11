@@ -141,7 +141,7 @@ public class IntComputer {
         }
     }
 
-    public void nextInput(BigInteger input) {
+    public void acceptInput(BigInteger input) {
         while (getOp() != 3) {
             step();
         }

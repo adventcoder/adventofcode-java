@@ -1,18 +1,11 @@
 package adventofcode.calendar.year2019.day2;
 
 import adventofcode.calendar.year2019.common.IntComputer;
-import adventofcode.framework.Session;
-import adventofcode.framework.Solver;
+import adventofcode.framework.AbstractPart;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
-public class Part2 extends Solver<Integer> {
-    public static void main(String[] args) throws IOException {
-        Session session = Session.getInstance();
-        session.printAnswer(2019, 2, new Part2());
-    }
-
+public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
         for (int noun = 0; noun < 100; noun++) {

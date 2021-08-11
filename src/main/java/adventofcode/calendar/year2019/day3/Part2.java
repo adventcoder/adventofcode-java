@@ -1,18 +1,11 @@
 package adventofcode.calendar.year2019.day3;
 
-import adventofcode.framework.Session;
-import adventofcode.framework.Solver;
+import adventofcode.framework.AbstractPart;
 import adventofcode.utils.Enumerable;
 
-import java.io.IOException;
 import java.util.*;
 
-public class Part2 extends Solver<Integer> {
-    public static void main(String[] args) throws IOException {
-        Session session = Session.getInstance();
-        session.printAnswer(2019, 3, new Part2());
-    }
-
+public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
         Map<Point, Integer> crossPoints = null;

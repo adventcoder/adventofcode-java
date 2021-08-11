@@ -1,22 +1,13 @@
 package adventofcode.calendar.year2019.day7;
 
 import adventofcode.calendar.year2019.common.IntComputer;
-import adventofcode.framework.Session;
-import adventofcode.framework.Solver;
-import adventofcode.utils.Enumerable;
+import adventofcode.framework.AbstractPart;
 import adventofcode.utils.IntArray;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.stream.IntStream;
 
-public class Part2 extends Solver<BigInteger> {
-    public static void main(String[] args) throws IOException {
-        Session session = Session.getInstance();
-        session.printAnswer(2019, 7, new Part2());
-    }
-
+public class Part2 extends AbstractPart<BigInteger> {
     @Override
     public BigInteger solve(String input) {
         return recurse(input, IntStream.range(5, 10).toArray(), 0);
@@ -43,7 +34,7 @@ public class Part2 extends Solver<BigInteger> {
         IntComputer[] amplifiers = new IntComputer[setting.length];
         for (int i = 0; i < setting.length; i++) {
             amplifiers[i] = new IntComputer(program);
-            amplifiers[i].nextInput(BigInteger.valueOf(setting[i]));
+            amplifiers[i].acceptInput(BigInteger.valueOf(setting[i]));
         }
         BigInteger signal = BigInteger.ZERO;
         while (true) {
@@ -52,7 +43,7 @@ public class Part2 extends Solver<BigInteger> {
                 if (amplifier.halting()) {
                     return signal;
                 }
-                amplifier.nextInput(nextSignal);
+                amplifier.acceptInput(nextSignal);
                 nextSignal = amplifier.nextOutput();
             }
             signal = nextSignal;

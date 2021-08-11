@@ -1,16 +1,8 @@
 package adventofcode.calendar.year2019.day1;
 
-import adventofcode.framework.Session;
-import adventofcode.framework.Solver;
+import adventofcode.framework.AbstractPart;
 
-import java.io.IOException;
-
-public class Part2 extends Solver<Integer> {
-    public static void main(String[] args) throws IOException {
-        Session session = Session.getInstance();
-        session.printAnswer(2019, 1, new Part2());
-    }
-
+public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
         int totalFuel = 0;

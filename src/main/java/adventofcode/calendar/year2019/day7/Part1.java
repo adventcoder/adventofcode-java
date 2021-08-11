@@ -1,20 +1,13 @@
 package adventofcode.calendar.year2019.day7;
 
 import adventofcode.calendar.year2019.common.IntComputer;
-import adventofcode.framework.Session;
-import adventofcode.framework.Solver;
+import adventofcode.framework.AbstractPart;
 import adventofcode.utils.IntArray;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.stream.IntStream;
 
-public class Part1 extends Solver<BigInteger> {
-    public static void main(String[] args) throws IOException {
-        Session session = Session.getInstance();
-        session.printAnswer(2019, 7, new Part1());
-    }
-
+public class Part1 extends AbstractPart<BigInteger> {
     @Override
     public BigInteger solve(String input) {
         return recurse(input, IntStream.range(0, 5).toArray(), 0);
@@ -41,8 +34,8 @@ public class Part1 extends Solver<BigInteger> {
         BigInteger signal = BigInteger.ZERO;
         for (int i = 0; i < setting.length; i++) {
             IntComputer amplifier = new IntComputer(program);
-            amplifier.nextInput(BigInteger.valueOf(setting[i]));
-            amplifier.nextInput(signal);
+            amplifier.acceptInput(BigInteger.valueOf(setting[i]));
+            amplifier.acceptInput(signal);
             signal = amplifier.nextOutput();
         }
         return signal;
