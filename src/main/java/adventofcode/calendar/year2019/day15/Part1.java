@@ -1,11 +1,18 @@
 package adventofcode.calendar.year2019.day15;
 
 import adventofcode.framework.AbstractPart;
+import adventofcode.utils.search.DFS;
 
 public class Part1 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
         Droid droid = new Droid(input);
-        return droid.moveToOxygenSystem(null);
+        DFS<Droid, Dir> search = new DFS<>(droid);
+        while (droid.status != 2) {
+            if (!search.advance()) {
+                return null;
+            }
+        }
+        return search.depth();
     }
 }

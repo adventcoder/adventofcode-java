@@ -7,6 +7,19 @@ public class Part1 extends AbstractPart<Integer> {
     public Integer solve(String input) {
         Game game = new Game(input);
         game.run();
-        return game.getTileCount(Game.BLOCK);
+        return game.blockCount;
+    }
+
+    private static class Game extends AbstractGame {
+        public Game(String input) {
+            super(input, 1);
+        }
+
+        public int blockCount = 0;
+
+        @Override
+        public void putTile(int tileX, int tileY, int tileId) {
+            if (tileId == 2) blockCount++;
+        }
     }
 }
