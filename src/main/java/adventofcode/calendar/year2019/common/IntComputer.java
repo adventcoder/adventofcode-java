@@ -149,21 +149,22 @@ public class IntComputer {
         pc += 2;
     }
 
-    public boolean hasNextOutput() {
+    public BigInteger peekOutput() {
         while (getOp() != 4) {
             if (getOp() == 99) {
-                return false;
+                return null;
             }
             step();
         }
-        return true;
+        return getArg(1);
+    }
+
+    public boolean hasNextOutput() {
+        return peekOutput() != null;
     }
 
     public BigInteger nextOutput() {
-        while (getOp() != 4) {
-            step();
-        }
-        BigInteger output = getArg(1);
+        BigInteger output = peekOutput();
         pc += 2;
         return output;
     }

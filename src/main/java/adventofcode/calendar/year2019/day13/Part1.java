@@ -12,7 +12,7 @@ public class Part1 extends AbstractPart<Integer> {
 
     private static class Game extends AbstractGame {
         public Game(String input) {
-            super(input, 1);
+            super(input);
         }
 
         public int blockCount = 0;

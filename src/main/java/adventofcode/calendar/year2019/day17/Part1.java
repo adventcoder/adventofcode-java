@@ -10,10 +10,10 @@ public class Part1 extends AbstractPart<Integer> {
     public Integer solve(String input) {
         int sum = 0;
         ASCIIComputer terminal = new ASCIIComputer(input);
-        List<StringBuilder> lines = terminal.readLines();
-        for (int y = 1; y < lines.size() - 1; y++) {
-            for (int x = 1; x < lines.get(y).length() - 1; x++) {
-                if (isIntersection(lines, x, y)) {
+        List<StringBuilder> grid = terminal.readLines();
+        for (int y = 0; y < grid.size(); y++) {
+            for (int x = 0; x < grid.get(y).length(); x++) {
+                if (isIntersection(grid, x, y)) {
                     sum += x * y;
                 }
             }
@@ -21,11 +21,15 @@ public class Part1 extends AbstractPart<Integer> {
         return sum;
     }
 
-    private boolean isIntersection(List<StringBuilder> lines, int x, int y) {
-        return lines.get(y).charAt(x) != '#' &&
-                lines.get(y - 1).charAt(x) != '#' &&
-                lines.get(y + 1).charAt(x) != '#' &&
-                lines.get(y).charAt(x - 1) != '#' &&
-                lines.get(y).charAt(x + 1) != '#';
+    private boolean isIntersection(List<StringBuilder> grid, int x, int y) {
+        return isScaffold(grid, x, y) &&
+                isScaffold(grid, x - 1, y) &&
+                isScaffold(grid, x + 1, y) &&
+                isScaffold(grid, x, y - 1) &&
+                isScaffold(grid, x, y + 1);
+    }
+
+    private boolean isScaffold(List<StringBuilder> grid, int x, int y) {
+        return y >= 0 && y < grid.size() && x >= 0 && x < grid.get(y).length() && grid.get(y).charAt(x) == '#';
     }
 }

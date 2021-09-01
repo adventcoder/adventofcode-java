@@ -9,9 +9,8 @@ import java.util.List;
 public abstract class AbstractGame extends IntComputer {
     private final List<BigInteger> prevOutputs = new ArrayList<>(2);
 
-    public AbstractGame(String program, int part) {
+    public AbstractGame(String program) {
         super(program);
-        set(0, BigInteger.valueOf(part));
     }
 
     @Override

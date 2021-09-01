@@ -9,13 +9,14 @@ public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
         Game game = new Game(input);
+        game.set(0, BigInteger.TWO);
         game.run();
         return game.score;
     }
 
     private static class Game extends AbstractGame {
         public Game(String input) {
-            super(input, 2);
+            super(input);
         }
 
         public int score;

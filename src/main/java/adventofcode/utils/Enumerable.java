@@ -10,6 +10,10 @@ public interface Enumerable<T> extends Iterable<T> {
         return (action) -> {};
     }
 
+    static <T> Enumerable<T> of(T[] array) {
+        return of(Arrays.asList(array));
+    }
+
     static <T> Enumerable<T> of(Iterable<T> iterable) {
         return new Enumerable<T>() {
             @Override
