@@ -15,7 +15,7 @@ public interface Enumerable<T> extends Iterable<T> {
     }
 
     static <T> Enumerable<T> of(Iterable<T> iterable) {
-        return new Enumerable<T>() {
+        return new Enumerable<>() {
             @Override
             public void forEach(Consumer<? super T> action) {
                 iterable.forEach(action);
@@ -68,8 +68,8 @@ public interface Enumerable<T> extends Iterable<T> {
             U value = identity;
 
             @Override
-            public void accept(T t) {
-                value = op.apply(value, f.apply(t));
+            public void accept(T x) {
+                value = op.apply(value, f.apply(x));
             }
         }
         Reducer reducer = new Reducer();
@@ -82,11 +82,11 @@ public interface Enumerable<T> extends Iterable<T> {
             U value = null;
 
             @Override
-            public void accept(T t) {
+            public void accept(T x) {
                 if (value == null) {
-                    Objects.requireNonNull(f.apply(t));
+                    Objects.requireNonNull(f.apply(x));
                 } else {
-                    value = op.apply(value, Objects.requireNonNull(f.apply(t)));
+                    value = op.apply(value, Objects.requireNonNull(f.apply(x)));
                 }
             }
         }
@@ -100,8 +100,8 @@ public interface Enumerable<T> extends Iterable<T> {
             int value = identity;
 
             @Override
-            public void accept(T t) {
-                value = op.applyAsInt(value, f.applyAsInt(t));
+            public void accept(T x) {
+                value = op.applyAsInt(value, f.applyAsInt(x));
             }
         }
         Reducer reducer = new Reducer();
@@ -118,13 +118,41 @@ public interface Enumerable<T> extends Iterable<T> {
     }
 
     default <U extends Comparable<U>> T argMin(Function<? super T, ? extends U> f) {
-        AbstractMap.SimpleEntry<T, U> pair = reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), (a, b) -> b.getValue().compareTo(a.getValue()) < 0 ? b : a);
-        return pair == null ? null : pair.getKey();
+        class Accumulator implements Consumer<T> {
+            T minArg;
+            U min;
+
+            @Override
+            public void accept(T x) {
+                U y = f.apply(x);
+                if (min == null || y.compareTo(min) < 0) {
+                    minArg = x;
+                    min = y;
+                }
+            }
+        }
+        Accumulator accumulator = new Accumulator();
+        forEach(accumulator);
+        return accumulator.minArg;
     }
 
     default <U extends Comparable<U>> T argMax(Function<? super T, ? extends U> f) {
-        AbstractMap.SimpleEntry<T, U> pair = reduce((x) -> new AbstractMap.SimpleEntry<>(x, f.apply(x)), (a, b) -> b.getValue().compareTo(a.getValue()) > 0 ? b : a);
-        return pair == null ? null : pair.getKey();
+        class Accumulator implements Consumer<T> {
+            T maxArg;
+            U max;
+
+            @Override
+            public void accept(T x) {
+                U y = f.apply(x);
+                if (max == null || y.compareTo(max) > 0) {
+                    maxArg = x;
+                    max = y;
+                }
+            }
+        }
+        Accumulator accumulator = new Accumulator();
+        forEach(accumulator);
+        return accumulator.maxArg;
     }
 
     default int sum(ToIntFunction<? super T> f) {

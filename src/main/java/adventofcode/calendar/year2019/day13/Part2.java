@@ -25,7 +25,7 @@ public class Part2 extends AbstractPart<Integer> {
 
         @Override
         public BigInteger get() {
-            return BigInteger.valueOf(IntMath.signum(ballX - paddleX));
+            return BigInteger.valueOf(IntMath.sgn(ballX - paddleX));
         }
 
         @Override

@@ -10,31 +10,22 @@ import java.util.stream.IntStream;
 public class Part2 extends AbstractPart<BigInteger> {
     @Override
     public BigInteger solve(String input) {
-        return recurse(input, IntStream.range(5, 10).toArray(), 0);
-    }
-
-    private BigInteger recurse(String program, int[] setting, int size) {
-        if (size == setting.length) {
-            return run(program, setting);
-        } else {
-            BigInteger maxSignal = recurse(program, setting, size + 1);
-            for (int i = size + 1; i < setting.length; i++) {
-                IntArray.swap(setting, size, i);
-                BigInteger signal = recurse(program, setting, size + 1);
-                if (signal.compareTo(maxSignal) > 0) {
-                    maxSignal = signal;
-                }
-                IntArray.swap(setting, size, i);
+        BigInteger maxSignal = BigInteger.ZERO;
+        int[] settings = IntStream.range(5, 10).toArray();
+        while (IntArray.nextPermutation(settings)) {
+            BigInteger signal = run(input, settings);
+            if (signal.compareTo(maxSignal) > 0) {
+                maxSignal = signal;
             }
-            return maxSignal;
         }
+        return maxSignal;
     }
 
-    private BigInteger run(String program, int[] setting) {
-        IntComputer[] amplifiers = new IntComputer[setting.length];
-        for (int i = 0; i < setting.length; i++) {
+    private BigInteger run(String program, int[] settings) {
+        IntComputer[] amplifiers = new IntComputer[settings.length];
+        for (int i = 0; i < settings.length; i++) {
             amplifiers[i] = new IntComputer(program);
-            amplifiers[i].acceptInput(BigInteger.valueOf(setting[i]));
+            amplifiers[i].acceptInput(BigInteger.valueOf(settings[i]));
         }
         BigInteger signal = BigInteger.ZERO;
         while (true) {

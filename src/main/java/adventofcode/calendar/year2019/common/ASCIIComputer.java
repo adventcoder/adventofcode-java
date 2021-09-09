@@ -1,17 +1,53 @@
 package adventofcode.calendar.year2019.common;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
 public class ASCIIComputer extends IntComputer {
+    public InputStream in = System.in;
+    public OutputStream out = System.out;
+
     public ASCIIComputer(String program) {
         super(program);
     }
 
+    @Override
+    protected BigInteger get() {
+        try {
+            int codePoint = in.read();
+            if (codePoint == -1) {
+                System.exit(0);
+            }
+            return BigInteger.valueOf(codePoint);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            System.exit(1);
+            return null;
+        }
+    }
+
+    @Override
+    protected void put(BigInteger value) {
+        if (value.compareTo(BigInteger.ZERO) < 0 || value.compareTo(BigInteger.valueOf(0xFF)) > 0) {
+            super.put(value);
+        } else {
+            try {
+                out.write(value.intValue());
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                System.exit(1);
+            }
+        }
+    }
+
     public void write(int codePoint) {
-        acceptInput(BigInteger.valueOf(codePoint & 0x7F));
+        BigInteger value = BigInteger.valueOf(codePoint & 0xFF);
+        acceptInput(value);
     }
 
     public void write(String string) {
@@ -31,7 +67,7 @@ public class ASCIIComputer extends IntComputer {
     public int read() {
         if (hasNextOutput()) {
             int codePoint = nextOutput().intValueExact();
-            if (codePoint < 0 || codePoint >= 0x80) {
+            if (codePoint < 0 || codePoint > 0xFF) {
                 throw new InputMismatchException("not an ASCII code point: " + codePoint);
             }
             return codePoint;

@@ -26,7 +26,18 @@ public class IntMath {
         return n;
     }
 
-    public static int signum(int n) {
+    public static int sgn(int n) {
         return ((-n) >>> 31) - (n >>> 31);
+    }
+
+    public static int gcd(int a, int b) {
+        if (a < 0) a = -a;
+        if (b < 0) b = -b;
+        while (b > 0) {
+            int r = a % b;
+            a = b;
+            b = r;
+        }
+        return a;
     }
 }

@@ -5,6 +5,7 @@ import adventofcode.utils.IntMath;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 public class IntComputer {
     private BigInteger[] mem;
@@ -116,33 +117,54 @@ public class IntComputer {
             rb += getArg(1).intValue();
             pc += 2;
             break;
-        case 99: // halt
-            throw new NoSuchElementException("no more outputs");
+        case 99:
+            halt();
+            pc += 1;
+            break;
         default:
-            throw new RuntimeException();
+            throw new UnhandledOperationException();
         }
     }
 
     protected BigInteger get() {
-        throw new UnsupportedOperationException();
+        throw new UnhandledOperationException();
     }
 
     protected void put(BigInteger value) {
-        throw new UnsupportedOperationException();
+        throw new UnhandledOperationException();
+    }
+
+    protected void halt() {
+        throw new UnhandledOperationException();
+    }
+
+    public String state() {
+        if (inputting()) return "inputting";
+        if (outputting()) return "outputting";
+        if (halting()) return "halting";
+        return "running";
     }
 
     public boolean halting() {
         return getOp() == 99;
     }
 
+    public boolean inputting() {
+        return getOp() == 3;
+    }
+
+    public boolean outputting() {
+        return getOp() == 4;
+    }
+
     public void run() {
-        while (getOp() != 99) {
+        while (!halting()) {
             step();
         }
     }
 
     public void acceptInput(BigInteger input) {
-        while (getOp() != 3) {
+        while (!inputting()) {
             step();
         }
         setArg(1, input);
@@ -150,12 +172,10 @@ public class IntComputer {
     }
 
     public BigInteger peekOutput() {
-        while (getOp() != 4) {
-            if (getOp() == 99) {
-                return null;
-            }
+        while (!outputting() && !halting()) {
             step();
         }
+        if (halting()) return null;
         return getArg(1);
     }
 
@@ -165,7 +185,20 @@ public class IntComputer {
 
     public BigInteger nextOutput() {
         BigInteger output = peekOutput();
+        if (output == null) {
+            throw new NoSuchElementException();
+        }
         pc += 2;
         return output;
+    }
+
+    public BigInteger peekUnhandledOutput() {
+        try {
+            run();
+            return null;
+        } catch (UnhandledOperationException e) {
+            if (!outputting()) throw e;
+            return getArg(1);
+        }
     }
 }
