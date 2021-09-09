@@ -5,7 +5,6 @@ import adventofcode.utils.IntMath;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
 public class IntComputer {
     private BigInteger[] mem;
@@ -200,5 +199,18 @@ public class IntComputer {
             if (!outputting()) throw e;
             return getArg(1);
         }
+    }
+
+    public boolean hasNextUnhandledOutput() {
+        return peekUnhandledOutput() != null;
+    }
+
+    public BigInteger nextUnhandledOutput() {
+        BigInteger output = peekUnhandledOutput();
+        if (output == null) {
+            throw new NoSuchElementException();
+        }
+        pc += 2;
+        return output;
     }
 }

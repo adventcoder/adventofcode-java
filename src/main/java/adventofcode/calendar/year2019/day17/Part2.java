@@ -26,7 +26,7 @@ public class Part2 extends AbstractPart<BigInteger> {
         terminal.writeLine(String.join(",", subs.get("B")));
         terminal.writeLine(String.join(",", subs.get("C")));
         terminal.writeLine("n");
-        return terminal.peekUnhandledOutput();
+        return terminal.nextUnhandledOutput();
     }
 
     public boolean tryMakeRoutines(List<String> path, List<String> main, Map<String, List<String>> subs) {
