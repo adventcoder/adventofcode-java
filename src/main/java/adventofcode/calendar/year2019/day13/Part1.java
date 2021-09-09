@@ -1,25 +1,21 @@
 package adventofcode.calendar.year2019.day13;
 
+import adventofcode.calendar.year2019.common.IntComputer;
 import adventofcode.framework.AbstractPart;
 
 public class Part1 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
-        Game game = new Game(input);
-        game.run();
-        return game.blockCount;
-    }
-
-    private static class Game extends AbstractGame {
-        public Game(String input) {
-            super(input);
+        int blockCount = 0;
+        IntComputer game = new IntComputer(input);
+        while (game.hasNextOutput()) {
+            int x = game.nextOutput().intValue();
+            int y = game.nextOutput().intValue();
+            int tileId = game.nextOutput().intValue();
+            if (tileId == 2) {
+                blockCount++;
+            }
         }
-
-        public int blockCount = 0;
-
-        @Override
-        public void putTile(int tileX, int tileY, int tileId) {
-            if (tileId == 2) blockCount++;
-        }
+        return blockCount;
     }
 }

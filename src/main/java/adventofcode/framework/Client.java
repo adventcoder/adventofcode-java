@@ -17,39 +17,38 @@ import java.util.Properties;
 
 public class Client {
     public static Client create(Properties properties) {
-        try {
-            return new Client(getSSLContext(properties), Cache.create(properties));
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
+        return new Client(getSSLContext(properties), Cache.create(properties));
     }
 
-    private static SSLContext getSSLContext(Properties properties) throws GeneralSecurityException {
+    private static SSLContext getSSLContext(Properties properties) {
         if (Boolean.parseBoolean(properties.getProperty("insecure"))) {
             return getInsecureSSLContext();
-        } else {
-            return SSLContext.getDefault();
         }
+        return null;
     }
 
-    private static SSLContext getInsecureSSLContext() throws GeneralSecurityException {
-        TrustManager insecureTrustManager = new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) {
-            }
+    private static SSLContext getInsecureSSLContext() {
+        try {
+            TrustManager insecureTrustManager = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                }
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) {
-            }
+                @Override
+                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                }
 
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
-        };
-        SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, new TrustManager[] { insecureTrustManager }, new SecureRandom());
-        return context;
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            };
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new TrustManager[] { insecureTrustManager }, new SecureRandom());
+            return context;
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException("Failed to create insecure SSL context", e);
+        }
     }
 
     private final SSLContext sslContext;

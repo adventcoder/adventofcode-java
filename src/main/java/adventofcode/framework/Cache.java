@@ -29,15 +29,14 @@ public class Cache {
             return StringIO.read(file);
         } else {
             String result = supplier.get();
-            if (!dir.exists() && !dir.mkdir()) {
-                return result;
-            }
-            try {
-                StringIO.write(file, result);
-            } catch (IOException ioe) {
-                if (file.exists() && !file.delete()) {
-                    file.deleteOnExit();
-                    System.exit(1);
+            if (dir.exists() || dir.mkdir()) {
+                try {
+                    StringIO.write(file, result);
+                } catch (IOException ioe) {
+                    if (file.exists() && !file.delete()) {
+                        file.deleteOnExit();
+                        System.exit(1);
+                    }
                 }
             }
             return result;
