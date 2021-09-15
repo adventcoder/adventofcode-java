@@ -75,11 +75,11 @@ public class IntComputer {
     public void step() {
         switch (getOp()) {
         case 1: // add
-            set(getArgAddress(3), getArg(1).add(getArg(2)));
+            setArg(3, getArg(1).add(getArg(2)));
             pc += 4;
             break;
         case 2: // mul
-            set(getArgAddress(3), getArg(1).multiply(getArg(2)));
+            setArg(3, getArg(1).multiply(getArg(2)));
             pc += 4;
             break;
         case 3: // input
@@ -135,13 +135,6 @@ public class IntComputer {
 
     protected void halt() {
         throw new UnhandledOperationException();
-    }
-
-    public String state() {
-        if (inputting()) return "inputting";
-        if (outputting()) return "outputting";
-        if (halting()) return "halting";
-        return "running";
     }
 
     public boolean halting() {
