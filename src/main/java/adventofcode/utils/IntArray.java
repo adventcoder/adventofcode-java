@@ -8,10 +8,20 @@ public class IntArray {
     }
 
     public static void reverse(int[] array, int start, int end) {
-        end--;
-        while (start < end) {
-            swap(array, start++, end--);
+        while (end - start > 1) {
+            swap(array, start++, --end);
         }
+    }
+
+    public static void rotateLeft(int[] array, int n) {
+        n = Math.floorMod(n, array.length);
+        reverse(array, 0, n);
+        reverse(array, n, array.length);
+        reverse(array, 0, array.length);
+    }
+
+    public static void rotateRight(int[] array, int n) {
+        rotateLeft(array, -n);
     }
 
     public static boolean nextPermutation(int[] array) {
