@@ -8,16 +8,29 @@ import java.util.*;
 public class Part2 extends AbstractPart<BigInteger> {
     @Override
     public BigInteger solve(String input) {
-        return new Network(input) {
-            private Set<BigInteger> seen = new HashSet<>();
-
-            @Override
-            public void send(int from, int to, BigInteger x, BigInteger y) {
-                if (from == 255 && to == 0 && !seen.add(y)) {
-                    throw new Answer(y);
-                }
-                super.send(from, to, x, y);
+        Queue<Packet> bus = new ArrayDeque<>();
+        NIC[] nics = new NIC[50];
+        for (int i = 0; i < nics.length; i++) {
+            nics[i] = new NIC(input, bus, i);
+        }
+        NAT nat = new NAT(bus, nics);
+        Set<BigInteger> seen = new HashSet<>();
+        while (true) {
+            for (NIC nic : nics) {
+                nic.step();
             }
-        }.answer();
+            nat.step();
+            while (!bus.isEmpty()) {
+                Packet packet = bus.remove();
+                if (packet.from == 255 && packet.to == 0 && !seen.add(packet.y)) {
+                    return packet.y;
+                }
+                if (packet.to == 255) {
+                    nat.receive(packet.x, packet.y);
+                } else {
+                    nics[packet.to].receive(packet.x, packet.y);
+                }
+            }
+        }
     }
 }

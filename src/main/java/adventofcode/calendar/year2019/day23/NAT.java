@@ -1,14 +1,21 @@
 package adventofcode.calendar.year2019.day23;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.Queue;
+
+import static adventofcode.utils.Iterables.all;
 
 public class NAT {
-    private final Network network;
+    private final Queue<Packet> bus;
+    private final NIC[] nics;
     private BigInteger x;
     private BigInteger y;
 
-    public NAT(Network network) {
-        this.network = network;
+    public NAT(Queue<Packet> bus, NIC[] nics) {
+        this.nics = nics;
+        this.bus = bus;
     }
 
     public void receive(BigInteger x, BigInteger y) {
@@ -17,10 +24,14 @@ public class NAT {
     }
 
     public void step() {
-        if (network.isIdle()) {
-            network.send(255, 0, x, y);
+        if (isIdle()) {
+            bus.add(new Packet(255, 0, x, y));
             x = null;
             y = null;
         }
+    }
+
+    private boolean isIdle() {
+        return all(NIC::isIdle, Arrays.asList(nics));
     }
 }

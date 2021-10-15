@@ -1,25 +1,22 @@
 package adventofcode.calendar.year2019.day23;
 
-import adventofcode.calendar.year2019.common.IntComputer;
+import adventofcode.calendar.year2019.Intcode;
 
 import java.math.BigInteger;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
-public class NIC extends IntComputer {
-    private final Network network;
+public class NIC extends Intcode {
+    private final Queue<Packet> bus;
     private final int addr;
-    private Queue<BigInteger> inputs = new ArrayDeque<>();
-    private List<BigInteger> outputs = new ArrayList<>();
+    private final Queue<BigInteger> inputs = new ArrayDeque<>();
+    private final List<BigInteger> outputs = new ArrayList<>();
     private int idleCount;
 
-    public NIC(String program, Network network, int addr) {
+    public NIC(String program, Queue<Packet> bus, int addr) {
         super(program);
-        this.network = network;
+        this.bus = bus;
         this.addr = addr;
-        acceptInput(BigInteger.valueOf(addr));
+        inputs.add(BigInteger.valueOf(addr));
     }
 
     public boolean isIdle() {
@@ -33,7 +30,7 @@ public class NIC extends IntComputer {
     }
 
     @Override
-    protected BigInteger get() {
+    protected BigInteger read() {
         if (inputs.isEmpty()) {
             idleCount++;
             return BigInteger.valueOf(-1);
@@ -43,10 +40,10 @@ public class NIC extends IntComputer {
     }
 
     @Override
-    protected void put(BigInteger output) {
+    protected void write(BigInteger output) {
         outputs.add(output);
         if (outputs.size() == 3) {
-            network.send(addr, outputs.get(0).intValue(), outputs.get(1), outputs.get(2));
+            bus.add(new Packet(addr, outputs.get(0).intValue(), outputs.get(1), outputs.get(2)));
             outputs.clear();
         }
     }

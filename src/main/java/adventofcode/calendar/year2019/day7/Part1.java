@@ -1,6 +1,6 @@
 package adventofcode.calendar.year2019.day7;
 
-import adventofcode.calendar.year2019.common.IntComputer;
+import adventofcode.calendar.year2019.BufferedIntcode;
 import adventofcode.framework.AbstractPart;
 import adventofcode.utils.IntArray;
 
@@ -24,10 +24,10 @@ public class Part1 extends AbstractPart<BigInteger> {
     private BigInteger run(String program, int[] settings) {
         BigInteger signal = BigInteger.ZERO;
         for (int setting : settings) {
-            IntComputer amplifier = new IntComputer(program);
-            amplifier.acceptInput(BigInteger.valueOf(setting));
-            amplifier.acceptInput(signal);
-            signal = amplifier.nextOutput();
+            BufferedIntcode code = new BufferedIntcode(program);
+            code.accept(setting);
+            code.accept(signal);
+            signal = code.next();
         }
         return signal;
     }

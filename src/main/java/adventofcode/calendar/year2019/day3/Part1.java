@@ -1,10 +1,11 @@
 package adventofcode.calendar.year2019.day3;
 
 import adventofcode.framework.AbstractPart;
-import adventofcode.utils.Enumerable;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static adventofcode.utils.Iterables.min;
 
 public class Part1 extends AbstractPart<Integer> {
     @Override
@@ -18,7 +19,7 @@ public class Part1 extends AbstractPart<Integer> {
             }
         }
         if (crossPoints == null) return null;
-        return Enumerable.of(crossPoints).min(Point::distanceFromOrigin);
+        return min(Point::distanceFromOrigin, crossPoints);
     }
     
     private Set<Point> getPoints(String line) {

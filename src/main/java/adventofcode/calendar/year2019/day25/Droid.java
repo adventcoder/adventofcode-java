@@ -1,51 +1,101 @@
 package adventofcode.calendar.year2019.day25;
 
-import adventofcode.calendar.year2019.common.ASCIIComputer;
+import adventofcode.calendar.year2019.BufferedIntcode;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Droid {
-    private final ASCIIComputer computer;
+    private final BufferedIntcode code;
     public String room;
     public String roomDescription;
     public List<String> itemsHere;
     public List<Dir> doorsHereLead;
 
-    public Droid(ASCIIComputer computer) {
-        this.computer = computer;
-        StringBuilder prompt = readRoom();
-        if (prompt == null || !prompt.toString().equals("Command?")) {
+    public Droid(String program) {
+        code = new BufferedIntcode(program);
+        String prompt = readRoom();
+        if (prompt == null || !prompt.equals("Command?")) {
             throw new InputMismatchException();
         }
     }
 
+    public void takeAllItems(Collection<String> skipItems, Dir skipDir) {
+        for (String item : new ArrayList<>(itemsHere)) {
+            if (!skipItems.contains(item)) {
+                take(item);
+            }
+        }
+        if (!room.equals("Security Checkpoint")) {
+            for (Dir dir : doorsHereLead) {
+                if (dir == skipDir) continue;
+                if (move(dir)) {
+                    takeAllItems(skipItems, dir.opposite());
+                    if (!move(dir.opposite())) {
+                        throw new IllegalStateException("stuck!");
+                    }
+                }
+            }
+        }
+    }
+
+    public String trialAndError(Dir skipDir) {
+        if (room.equals("Security Checkpoint")) {
+            List<String> items = inv();
+            int mask = (1 << items.size()) - 1;
+            for (int i = 0; i < (1 << items.size()); i++) {
+                for (Dir dir : doorsHereLead) {
+                    if (dir == skipDir) continue;
+                    String password = moveFinal(dir);
+                    if (password != null) return password;
+                }
+                int flipIndex = Integer.numberOfTrailingZeros(~i);
+                if ((mask & (1 << flipIndex)) == 0) {
+                    take(items.get(flipIndex));
+                } else {
+                    drop(items.get(flipIndex));
+                }
+                mask ^= 1 << flipIndex;
+            }
+        } else {
+            for (Dir dir : doorsHereLead) {
+                if (dir == skipDir) continue;
+                if (move(dir)) {
+                    String password = trialAndError(dir.opposite());
+                    if (password != null) return password;
+                    if (!move(dir.opposite())) {
+                        throw new IllegalStateException("stuck!");
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean move(Dir dir) {
-        computer.writeLine(dir.toString());
-        StringBuilder prompt = readRoom();
-        if (prompt != null && !prompt.toString().equals("Command?")) {
+        code.writeLine(dir.toString());
+        String prompt = readRoom();
+        if (prompt != null && !prompt.equals("Command?")) {
             throw new InputMismatchException();
         }
         return prompt != null;
     }
 
     public String moveFinal(Dir dir) {
-        computer.writeLine(dir.toString());
-        StringBuilder prompt = readRoom();
-        if (prompt == null || prompt.toString().equals("Command?")) {
+        code.writeLine(dir.toString());
+        String prompt = readRoom();
+        if (prompt == null || prompt.equals("Command?")) {
             throw new InputMismatchException();
         }
-        if (prompt.toString().contains("Analysis complete! You may proceed.")) {
-            computer.readLine();
-            Matcher matcher = Pattern.compile("\\d+").matcher(computer.readLine());
+        if (prompt.contains("Analysis complete! You may proceed.")) {
+            code.readLine();
+            Matcher matcher = Pattern.compile("\\d+").matcher(code.readLine());
             if (!matcher.find()) throw new InputMismatchException();
             return matcher.group();
         } else {
             prompt = readRoom();
-            if (prompt == null || !prompt.toString().equals("Command?")) {
+            if (prompt == null || !prompt.equals("Command?")) {
                 throw new InputMismatchException();
             }
             return null;
@@ -53,72 +103,72 @@ public class Droid {
     }
 
     public void take(String item) {
-        computer.writeLine("take " + item);
-        StringBuilder line = computer.readLine();
-        while (line != null && !line.toString().equals("Command?")) {
-            if (line.toString().equals("You take the " + item + ".")) {
+        code.writeLine("take " + item);
+        String line = code.readLine();
+        while (line != null && !line.equals("Command?")) {
+            if (line.equals("You take the " + item + ".")) {
                 itemsHere.remove(item);
             }
-            line = computer.readLine();
+            line = code.readLine();
         }
     }
 
     public void drop(String item) {
-        computer.writeLine("drop " + item);
-        StringBuilder line = computer.readLine();
-        while (!line.toString().equals("Command?")) {
-            if (line.toString().equals("You drop the " + item + ".")) {
+        code.writeLine("drop " + item);
+        String line = code.readLine();
+        while (!line.equals("Command?")) {
+            if (line.equals("You drop the " + item + ".")) {
                 itemsHere.add(item);
             }
-            line = computer.readLine();
+            line = code.readLine();
         }
     }
 
     public List<String> inv() {
-        computer.writeLine("inv");
+        code.writeLine("inv");
         List<String> items = new ArrayList<>();
-        StringBuilder line = computer.readLine();
-        while (!line.toString().equals("Command?")) {
-            if (line.toString().equals("Items in your inventory:")) {
-                line = computer.readLine();
-                while (Pattern.matches("- .*", line)) {
+        String line = code.readLine();
+        while (!line.equals("Command?")) {
+            if (line.equals("Items in your inventory:")) {
+                line = code.readLine();
+                while (line.matches("- .*")) {
                     items.add(line.substring(2));
-                    line = computer.readLine();
+                    line = code.readLine();
                 }
             }
-            line = computer.readLine();
+            line = code.readLine();
         }
         return items;
     }
 
-    private StringBuilder readRoom() {
-        StringBuilder line = computer.readLine();
-        while (!Pattern.matches("== .* ==", line)) {
-            if (line.toString().equals("Command?")) {
+    private String readRoom() {
+        String line = code.readLine();
+        while (!line.matches("== .* ==")) {
+            if (line.equals("Command?")) {
                 return null;
             }
-            line = computer.readLine();
+            line = code.readLine();
         }
         room = line.substring(3, line.length() - 3);
-        roomDescription = computer.readLine().toString();
+        roomDescription = code.readLine();
         itemsHere = new ArrayList<>();
         doorsHereLead = new ArrayList<>();
-        line = computer.readLine();
-        while (!line.toString().equals("Command?") && !line.toString().startsWith("A loud, robotic voice says ")) {
-            if (line.toString().equals("Items here:")) {
-                line = computer.readLine();
-                while (Pattern.matches("- .*", line)) {
+        line = code.readLine();
+        while (!line.equals("Command?") && !line.startsWith("A loud, robotic voice says ")) {
+            if (line.equals("Items here:")) {
+                line = code.readLine();
+                while (line.matches("- .*")) {
                     itemsHere.add(line.substring(2));
-                    line = computer.readLine();
+                    line = code.readLine();
                 }
-            } else if (line.toString().equals("Doors here lead:")) {
-                line = computer.readLine();
-                while (Pattern.matches("- .*", line)) {
+            } else if (line.equals("Doors here lead:")) {
+                line = code.readLine();
+                while (line.matches("- .*")) {
                     doorsHereLead.add(Dir.parseDir(line.substring(2)));
-                    line = computer.readLine();
+                    line = code.readLine();
                 }
             }
-            line = computer.readLine();
+            line = code.readLine();
         }
         return line;
     }

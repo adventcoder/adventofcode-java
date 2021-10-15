@@ -1,16 +1,16 @@
 package adventofcode.calendar.year2019.day11;
 
-import adventofcode.calendar.year2019.common.IntComputer;
+import adventofcode.calendar.year2019.Intcode;
 
 import java.math.BigInteger;
 
-public class Robot extends IntComputer {
+public class Robot extends Intcode {
     private final Hull hull;
     private int x = 0;
     private int y = 0;
     private int dx = 0;
     private int dy = -1;
-    private boolean firstOutput = true;
+    private int count = 0;
 
     public Robot(String program, Hull hull) {
         super(program);
@@ -18,28 +18,26 @@ public class Robot extends IntComputer {
     }
 
     @Override
-    protected BigInteger get() {
+    protected BigInteger read() {
         return hull.getColor(x, y);
     }
 
     @Override
-    protected void put(BigInteger output) {
-        if (firstOutput) {
+    protected void write(BigInteger output) {
+        if (count == 0) {
             hull.putColor(x, y, output);
-            firstOutput = false;
         } else {
+            int oldDx = dx;
             if (output.equals(BigInteger.ZERO)) {
-                int temp = dx;
                 dx = dy;
-                dy = -temp;
+                dy = -oldDx;
             } else if (output.equals(BigInteger.ONE)) {
-                int temp = dx;
                 dx = -dy;
-                dy = temp;
+                dy = oldDx;
             }
             x += dx;
             y += dy;
-            firstOutput = true;
         }
+        count = (count + 1) % 2;
     }
 }

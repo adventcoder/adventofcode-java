@@ -1,6 +1,6 @@
 package adventofcode.calendar.year2019.day19;
 
-import adventofcode.calendar.year2019.common.IntComputer;
+import adventofcode.calendar.year2019.BufferedIntcode;
 import adventofcode.framework.AbstractPart;
 
 import java.math.BigInteger;
@@ -24,10 +24,10 @@ public class Part2 extends AbstractPart<Integer> {
         return y;
     }
 
-    private boolean test(String input, int x, int y) {
-        IntComputer droid = new IntComputer(input);
-        droid.acceptInput(BigInteger.valueOf(x));
-        droid.acceptInput(BigInteger.valueOf(y));
-        return droid.nextOutput().intValue() == 1;
+    private boolean test(String program, int x, int y) {
+        BufferedIntcode droid = new BufferedIntcode(program);
+        droid.accept(x);
+        droid.accept(y);
+        return !droid.next().equals(BigInteger.ZERO);
     }
 }

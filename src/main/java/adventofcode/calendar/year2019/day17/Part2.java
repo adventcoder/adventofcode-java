@@ -1,32 +1,31 @@
 package adventofcode.calendar.year2019.day17;
 
-import adventofcode.calendar.year2019.common.ASCIIComputer;
+import adventofcode.calendar.year2019.BufferedIntcode;
 import adventofcode.framework.AbstractPart;
 import adventofcode.utils.Vector2D;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Part2 extends AbstractPart<BigInteger> {
     @Override
     public BigInteger solve(String input) {
-        ASCIIComputer terminal = new ASCIIComputer(input);
+        BufferedIntcode terminal = new BufferedIntcode(input);
         terminal.set(0, BigInteger.TWO);
-        List<StringBuilder> grid = terminal.readLines();
+        List<String> grid = terminal.readLines();
+        List<String> path = buildPath(grid);
         List<String> main = new ArrayList<>();
         Map<String, List<String>> subs = new HashMap<>();
-        if (!tryMakeRoutines(findPath(grid), main, subs)) {
-            return null;
-        }
+        if (!tryMakeRoutines(path, main, subs)) return null;
         terminal.writeLine(String.join(",", main));
         terminal.writeLine(String.join(",", subs.get("A")));
         terminal.writeLine(String.join(",", subs.get("B")));
         terminal.writeLine(String.join(",", subs.get("C")));
         terminal.writeLine("n");
-        return terminal.nextUnhandledOutput();
+        while (terminal.hasNextCodePoint()) {
+            terminal.next();
+        }
+        return terminal.next();
     }
 
     public boolean tryMakeRoutines(List<String> path, List<String> main, Map<String, List<String>> subs) {
@@ -63,9 +62,9 @@ public class Part2 extends AbstractPart<BigInteger> {
         return false;
     }
 
-    public List<String> findPath(List<StringBuilder> grid) {
+    public List<String> buildPath(List<String> grid) {
         List<String> route = new ArrayList<>();
-        Vector2D pos = findInitialPosition(grid);
+        Vector2D pos = getInitialPosition(grid);
         Vector2D dir = new Vector2D(0, -1);
         while (true) {
             if (isScaffold(grid, pos.add(dir.perpRight()))) {
@@ -87,13 +86,13 @@ public class Part2 extends AbstractPart<BigInteger> {
         return route;
     }
 
-    private boolean isScaffold(List<StringBuilder> grid, Vector2D pos) {
+    private boolean isScaffold(List<String> grid, Vector2D pos) {
         return pos.y >= 0 && pos.y < grid.size() &&
                 pos.x >= 0 && pos.x < grid.get(pos.y).length() &&
                 grid.get(pos.y).charAt(pos.x) == '#';
     }
 
-    private Vector2D findInitialPosition(List<StringBuilder> grid) {
+    private Vector2D getInitialPosition(List<String> grid) {
         for (int y = 0; y < grid.size(); y++) {
             for (int x = 0; x < grid.get(y).length(); x++) {
                 if (grid.get(y).charAt(x) == '^') {
@@ -101,6 +100,6 @@ public class Part2 extends AbstractPart<BigInteger> {
                 }
             }
         }
-        return null;
+        throw new NoSuchElementException();
     }
 }
