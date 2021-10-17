@@ -34,26 +34,27 @@ public abstract class Segment implements Iterable<Point> {
         }
     }
 
-    public static List<Segment> cross(String[] wires) {
-        List<Segment> crossings = new ArrayList<>();
-        Segment.forEach(wires[0], crossings::add);
-        for (int i = 1; i < wires.length; i++) {
-            crossings = Segment.cross(crossings, wires[i]);
+    public static List<Segment> cross(String... wires) {
+        List<Segment> crossings = null;
+        if (wires.length > 0) {
+            crossings = new ArrayList<>();
+            forEach(wires[0], crossings::add);
+            for (int i = 1; i < wires.length; i++) {
+                crossings = cross(crossings, wires[i]);
+            }
         }
         return crossings;
     }
 
     public static List<Segment> cross(List<Segment> segments, String wire) {
-        List<Segment> crossing = new ArrayList<>();
+        List<Segment> crossings = new ArrayList<>();
         forEach(wire, (a) -> {
             segments.forEach((b) -> {
                 Segment c = a.intersect(b);
-                if (c != null) {
-                    crossing.add(c);
-                }
+                if (c != null) crossings.add(c);
             });
         });
-        return crossing;
+        return crossings;
     }
 
     public abstract Segment intersect(Segment other);

@@ -4,7 +4,8 @@ import java.io.IOException;
 
 public abstract class AbstractPart<T> implements Part<T> {
     public static void main(String[] args) throws ReflectiveOperationException, IOException {
-        Part.main(Class.forName(System.getProperty("sun.java.command")).asSubclass(Part.class), args);
+        Class<?> mainClass = Class.forName(System.getProperty("sun.java.command"));
+        Part.main(mainClass.asSubclass(Part.class), args);
     }
 
     @Override
