@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Intcode implements Cloneable, Runnable {
+public class Intcode implements Runnable {
     public static BigInteger[] parse(String program) {
         return Stream.of(program.split(",")).map(BigInteger::new).toArray(BigInteger[]::new);
     }
@@ -102,17 +102,6 @@ public class Intcode implements Cloneable, Runnable {
 
     public Intcode(String program) {
         this.memory = parse(program);
-    }
-
-    @Override
-    public Intcode clone() {
-        try {
-            Intcode copy = (Intcode) super.clone();
-            copy.memory = memory.clone();
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
     }
 
     public boolean halting() {

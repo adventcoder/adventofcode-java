@@ -4,6 +4,7 @@ import adventofcode.framework.AbstractPart;
 
 import java.util.Set;
 
+//TODO: revisit
 public class Part1 extends AbstractPart<String> {
     private static final Set<String> skipItems = Set.of("infinite loop", "giant electromagnet", "escape pod", "photons", "molten lava");
 

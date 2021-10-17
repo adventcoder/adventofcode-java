@@ -28,6 +28,7 @@ public class Part2 extends AbstractPart<BigInteger> {
         return terminal.next();
     }
 
+    //TODO: clean this up?
     public boolean tryMakeRoutines(List<String> path, List<String> main, Map<String, List<String>> subs) {
         if (String.join(",", main).length() > 20) {
             return false;
@@ -67,23 +68,28 @@ public class Part2 extends AbstractPart<BigInteger> {
         Vector2D pos = getInitialPosition(grid);
         Vector2D dir = new Vector2D(0, -1);
         while (true) {
-            if (isScaffold(grid, pos.add(dir.perpRight()))) {
-                dir = dir.perpRight();
-                route.add("R");
-            } else if (isScaffold(grid, pos.add(dir.perpLeft()))) {
-                dir = dir.perpLeft();
-                route.add("L");
-            } else {
-                break;
-            }
+            String turn = getTurn(grid, pos, dir);
+            if (turn == null) return route;
+            route.add(turn);
             int distance = 0;
             do {
-                pos = pos.add(dir);
+                pos.addEq(dir);
                 distance++;
             } while (isScaffold(grid, pos.add(dir)));
             route.add(Integer.toString(distance));
         }
-        return route;
+    }
+
+    private String getTurn(List<String> grid, Vector2D pos, Vector2D dir) {
+        dir.rotateRight();
+        if (isScaffold(grid, pos.add(dir))) {
+            return "R";
+        }
+        dir.negate();
+        if (isScaffold(grid, pos.add(dir))) {
+            return "L";
+        }
+        return null;
     }
 
     private boolean isScaffold(List<String> grid, Vector2D pos) {
