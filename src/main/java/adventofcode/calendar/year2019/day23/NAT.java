@@ -2,7 +2,6 @@ package adventofcode.calendar.year2019.day23;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Queue;
 
 import static adventofcode.utils.Iterables.all;
