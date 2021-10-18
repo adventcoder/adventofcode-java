@@ -12,7 +12,7 @@ public class Part2 extends AbstractPart<BigInteger> {
     public BigInteger solve(String input) {
         BufferedIntcode terminal = new BufferedIntcode(input);
         terminal.set(0, BigInteger.TWO);
-        List<String> grid = terminal.readLines();
+        String[] grid = terminal.readLines();
         List<String> path = buildPath(grid);
         List<String> main = new ArrayList<>();
         Map<String, List<String>> subs = new HashMap<>();
@@ -63,7 +63,7 @@ public class Part2 extends AbstractPart<BigInteger> {
         return false;
     }
 
-    public List<String> buildPath(List<String> grid) {
+    public List<String> buildPath(String[] grid) {
         List<String> route = new ArrayList<>();
         Vector2D pos = getInitialPosition(grid);
         Vector2D dir = new Vector2D(0, -1);
@@ -80,7 +80,7 @@ public class Part2 extends AbstractPart<BigInteger> {
         }
     }
 
-    private String getTurn(List<String> grid, Vector2D pos, Vector2D dir) {
+    private String getTurn(String[] grid, Vector2D pos, Vector2D dir) {
         dir.rotateRight();
         if (isScaffold(grid, pos.add(dir))) {
             return "R";
@@ -92,16 +92,16 @@ public class Part2 extends AbstractPart<BigInteger> {
         return null;
     }
 
-    private boolean isScaffold(List<String> grid, Vector2D pos) {
-        return pos.y >= 0 && pos.y < grid.size() &&
-                pos.x >= 0 && pos.x < grid.get(pos.y).length() &&
-                grid.get(pos.y).charAt(pos.x) == '#';
+    private boolean isScaffold(String[] grid, Vector2D pos) {
+        return pos.y >= 0 && pos.y < grid.length &&
+                pos.x >= 0 && pos.x < grid[pos.y].length() &&
+                grid[pos.y].charAt(pos.x) == '#';
     }
 
-    private Vector2D getInitialPosition(List<String> grid) {
-        for (int y = 0; y < grid.size(); y++) {
-            for (int x = 0; x < grid.get(y).length(); x++) {
-                if (grid.get(y).charAt(x) == '^') {
+    private Vector2D getInitialPosition(String[] grid) {
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length(); x++) {
+                if (grid[y].charAt(x) == '^') {
                     return new Vector2D(x, y);
                 }
             }

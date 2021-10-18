@@ -10,9 +10,9 @@ public class Part1 extends AbstractPart<Integer> {
     public Integer solve(String input) {
         int sum = 0;
         BufferedIntcode terminal = new BufferedIntcode(input);
-        List<String> grid = terminal.readLines();
-        for (int y = 0; y < grid.size(); y++) {
-            for (int x = 0; x < grid.get(y).length(); x++) {
+        String[] grid = terminal.readLines();
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length(); x++) {
                 if (isIntersection(grid, x, y)) {
                     sum += x * y;
                 }
@@ -21,7 +21,7 @@ public class Part1 extends AbstractPart<Integer> {
         return sum;
     }
 
-    private boolean isIntersection(List<String> grid, int x, int y) {
+    private boolean isIntersection(String[] grid, int x, int y) {
         return isScaffold(grid, x, y) &&
                 isScaffold(grid, x - 1, y) &&
                 isScaffold(grid, x + 1, y) &&
@@ -29,7 +29,9 @@ public class Part1 extends AbstractPart<Integer> {
                 isScaffold(grid, x, y + 1);
     }
 
-    private boolean isScaffold(List<String> grid, int x, int y) {
-        return y >= 0 && y < grid.size() && x >= 0 && x < grid.get(y).length() && grid.get(y).charAt(x) == '#';
+    private boolean isScaffold(String[] grid, int x, int y) {
+        return y >= 0 && y < grid.length &&
+                x >= 0 && x < grid[y].length() &&
+                grid[y].charAt(x) == '#';
     }
 }

@@ -75,7 +75,7 @@ public class BufferedIntcode extends Intcode implements Consumer<BigInteger>, In
         return line.toString();
     }
 
-    public List<String> readLines() {
+    public String[] readLines() {
         String line = readLine();
         if (line == null) return null;
         List<String> lines = new ArrayList<>();
@@ -84,7 +84,7 @@ public class BufferedIntcode extends Intcode implements Consumer<BigInteger>, In
             line = readLine();
             if (line == null) break;
         }
-        return lines;
+        return lines.toArray(new String[0]);
     }
 
     public void writeCodePoint(int code) {
