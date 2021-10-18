@@ -23,7 +23,7 @@ public class Shuffle {
     }
 
     /**
-     * Given an index into a shuffled deck returns what the original index would have been.
+     * Given an index into a shuffled deck returns what the index would have been in the original deck.
      */
     public BigInteger applyInverse(BigInteger index) {
         return index.subtract(b).multiply(a.modInverse(size)).mod(size);
