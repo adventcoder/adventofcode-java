@@ -55,7 +55,7 @@ public class BufferedIntcode extends Intcode implements Consumer<BigInteger>, In
 
     public boolean hasNextCodePoint() {
         BigInteger next = peek();
-        return next != null && next.compareTo(BigInteger.ZERO) >= 0 && next.bitLength() <= 7;
+        return next != null && next.signum() >= 0 && next.bitLength() <= 7;
     }
 
     public int readCodePoint() {
