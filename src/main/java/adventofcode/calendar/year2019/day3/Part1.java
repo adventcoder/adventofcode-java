@@ -2,14 +2,14 @@ package adventofcode.calendar.year2019.day3;
 
 import adventofcode.framework.AbstractPart;
 
+import java.util.stream.Stream;
+
+import static adventofcode.utils.Iterables.min;
+
 public class Part1 extends AbstractPart<Integer> {
+    @Override
     public Integer solve(String input) {
-        int minDistance = Integer.MAX_VALUE;
-        for (Segment segment : Wire.cross(input.split("\n"))) {
-            for (Point point : segment) {
-                minDistance = Math.min(minDistance, point.distanceFromOrigin());
-            }
-        }
-        return minDistance;
+        Wire[] wires = Stream.of(input.split("\n")).map(Wire::new).toArray(Wire[]::new);
+        return min(Point::distanceFromOrigin, wires[0].cross(wires[1]));
     }
 }
