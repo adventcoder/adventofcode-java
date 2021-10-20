@@ -1,32 +1,12 @@
 package adventofcode.calendar.year2019.day14;
 
-import adventofcode.utils.IntMath;
-
 import java.math.BigInteger;
 import java.util.*;
 
-/*
-
-2 FUEL = 44 C + 5 D + 1 E + 29 A + 9 F + 48 G
-2 C = 7 B + 7 H
-8 D = 3 B + 7 A + 5 G + 10 H
-9 E = 12 G + 1 F + 8 H
-5 A = 157 ORE
-2 F = 165 ORE
-5 G = 177 ORE
-6 B = 165 ORE
-7 H = 179 ORE 
-
-
-5 FUEL, 1 BLARG
-(2 44 C + 5 D + 1 E + 29 A + 9 F + 48 G), 1 FUEL, 1 BLARG
-
-
-
- */
 public class Reactions {
     private final Map<String, Map<String, BigInteger>> outputs = new HashMap<>();
     private final Map<String, BigInteger> inputs = new HashMap<>();
+    public final List<String> sortedInputs = new ArrayList<>();
 
     public Reactions(String input) {
         for (String line : input.split("\n")) {
@@ -36,7 +16,12 @@ public class Reactions {
             inputs.put(rhs.getKey(), rhs.getValue());
             outputs.put(rhs.getKey(), lhs);
         }
+        for (String name : inputs.keySet()) {
+            addSortedInput(name);
+        }
+        Collections.reverse(sortedInputs);
     }
+
     public static Map<String, BigInteger> parseCompound(String str) {
         Map<String, BigInteger> atoms = new HashMap<>();
         for (String token : str.split(",")) {
@@ -51,23 +36,14 @@ public class Reactions {
         return new AbstractMap.SimpleEntry<>(parts[1], new BigInteger(parts[0]));
     }
 
-    public List<String> sortedInputs() {
-        List<String> sorted = new ArrayList<>();
-        for (String input : inputs.keySet()) {
-            addInputs(input, sorted);
-        }
-        Collections.reverse(sorted);
-        return sorted;
-    }
-
-    private void addInputs(String name, List<String> sorted) {
-        if (!sorted.contains(name)) {
+    private void addSortedInput(String name) {
+        if (!sortedInputs.contains(name)) {
             for (String newName : outputs.get(name).keySet()) {
                 if (inputs.containsKey(newName)) {
-                    addInputs(newName, sorted);
+                    addSortedInput(newName);
                 }
             }
-            sorted.add(name);
+            sortedInputs.add(name);
         }
     }
 

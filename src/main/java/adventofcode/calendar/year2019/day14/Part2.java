@@ -31,7 +31,7 @@ public class Part2 extends AbstractPart<BigInteger> {
     private BigInteger oreForFuel(Reactions reactions, BigInteger fuel) {
         Map<String, BigInteger> compound = new HashMap<>();
         compound.put("FUEL", fuel);
-        for (String name : reactions.sortedInputs()) {
+        for (String name : reactions.sortedInputs) {
             reactions.applyRoundingUp(name, compound);
         }
         return compound.get("ORE");
