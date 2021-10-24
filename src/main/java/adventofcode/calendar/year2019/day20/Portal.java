@@ -29,9 +29,6 @@ public class Portal {
 
     @Override
     public String toString() {
-        return "Portal{" +
-                "label='" + label + '\'' +
-                ", inside=" + inside +
-                '}';
+        return label + " " + (inside ? "(inner)" : "(outer)");
     }
 }

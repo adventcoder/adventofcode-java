@@ -5,7 +5,6 @@ import adventofcode.framework.AbstractPart;
 public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
-        Maze maze = new Maze(input);
-        return maze.getHyperDistance(new Portal("AA", false), new Portal("ZZ", false));
+        return new HyperMaze(input).getDistance(new HyperPortal("AA", false, 0), new HyperPortal("ZZ", false, 0));
     }
 }

@@ -9,6 +9,10 @@ public class HyperPortal {
         this.floor = floor;
     }
 
+    public HyperPortal(String label, boolean inside, int floor) {
+        this(new Portal(label, inside), floor);
+    }
+
     @Override
     public int hashCode() {
         return portal.hashCode() * 31 + floor;

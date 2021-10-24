@@ -7,20 +7,42 @@ import java.util.function.ToIntFunction;
 
 public class Iterables {
     public static <T> T first(Iterable<T> xs) {
-        T result = null;
+        T first = null;
         Iterator<T> it = xs.iterator();
         if (it.hasNext()) {
-            result = it.next();
+            first = it.next();
         }
-        return result;
+        return first;
     }
 
     public static <T> T last(Iterable<T> xs) {
-        T result = null;
+        T last = null;
         for (T x : xs) {
-            result = x;
+            last = x;
         }
-        return result;
+        return last;
+    }
+
+    public static <T, U> Iterable<U> map(Function<? super T, ? extends U> f, Iterable<T> xs) {
+        return () -> {
+            Iterator<T> it = xs.iterator();
+            return new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+
+                @Override
+                public U next() {
+                    return f.apply(it.next());
+                }
+
+                @Override
+                public void remove() {
+                    it.remove();
+                }
+            };
+        };
     }
 
     public static <T, U extends Comparable<U>> U min(Function<? super T, ? extends U> f, Iterable<T> xs) {
@@ -108,7 +130,7 @@ public class Iterables {
         for (T x : xs) sum += f.applyAsInt(x);
         return sum;
     }
-    
+
     public static <T> int product(ToIntFunction<? super T> f, Iterable<T> xs) {
         int product = 1;
         for (T x : xs) product *= f.applyAsInt(x);

@@ -14,6 +14,7 @@ public class Part2 extends AbstractPart<Integer> {
             Map<Integer, Integer> newStates = new HashMap<>();
             for (int z : states.keySet()) {
                 if (states.get(z) == 0) continue;
+                // Also tick neighbouring states, since they could come alive.
                 tickState(newStates, states, z - 1);
                 tickState(newStates, states, z);
                 tickState(newStates, states, z + 1);

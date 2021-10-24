@@ -4,6 +4,20 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Reactions {
+    public static Map<String, BigInteger> parseCompound(String str) {
+        Map<String, BigInteger> atoms = new HashMap<>();
+        for (String token : str.split(",")) {
+            Map.Entry<String, BigInteger> atom = parseAtom(token);
+            atoms.put(atom.getKey(), atom.getValue());
+        }
+        return atoms;
+    }
+
+    public static Map.Entry<String, BigInteger> parseAtom(String str) {
+        String[] parts = str.trim().split("\\s+");
+        return new AbstractMap.SimpleEntry<>(parts[1], new BigInteger(parts[0]));
+    }
+
     private final Map<String, Map<String, BigInteger>> outputs = new HashMap<>();
     private final Map<String, BigInteger> inputs = new HashMap<>();
     public final List<String> sortedInputs = new ArrayList<>();
@@ -20,20 +34,6 @@ public class Reactions {
             addSortedInput(name);
         }
         Collections.reverse(sortedInputs);
-    }
-
-    public static Map<String, BigInteger> parseCompound(String str) {
-        Map<String, BigInteger> atoms = new HashMap<>();
-        for (String token : str.split(",")) {
-            Map.Entry<String, BigInteger> atom = parseAtom(token);
-            atoms.put(atom.getKey(), atom.getValue());
-        }
-        return atoms;
-    }
-
-    public static Map.Entry<String, BigInteger> parseAtom(String str) {
-        String[] parts = str.trim().split("\\s+");
-        return new AbstractMap.SimpleEntry<>(parts[1], new BigInteger(parts[0]));
     }
 
     private void addSortedInput(String name) {
