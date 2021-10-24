@@ -5,7 +5,7 @@ import adventofcode.framework.AbstractPart;
 public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
-        RecursiveMaze maze = new RecursiveMaze(input);
-        return maze.findDistance(maze.getLabelPosition("AA"), maze.getLabelPosition("ZZ"));
+        Maze maze = new Maze(input);
+        return maze.getHyperDistance(new Portal("AA", false), new Portal("ZZ", false));
     }
 }
