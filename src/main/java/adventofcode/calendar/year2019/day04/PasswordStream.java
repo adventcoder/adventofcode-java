@@ -33,8 +33,8 @@ public class PasswordStream {
 
     public PasswordStream withIncreasingDigits() {
         return filter((password) -> {
-            for (int i = 0; i < length; i++) {
-                if (getDigit(password, i) > getDigit(password, i + 1)) {
+            for (int i = 0; i < length - 1; i++) {
+                if (getDigit(password, i) < getDigit(password, i + 1)) {
                     return false;
                 }
             }
