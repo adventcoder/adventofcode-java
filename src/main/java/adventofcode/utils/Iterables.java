@@ -1,9 +1,7 @@
 package adventofcode.utils;
 
-import java.util.Iterator;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
+import java.util.*;
+import java.util.function.*;
 
 public class Iterables {
     public static <T> T first(Iterable<T> xs) {
@@ -43,6 +41,12 @@ public class Iterables {
                 }
             };
         };
+    }
+
+    public static <T, U> List<U> collect(Function<? super T, ? extends U> f, Iterable<T> xs) {
+        List<U> list = new ArrayList<>();
+        for (T x : xs) list.add(f.apply(x));
+        return list;
     }
 
     public static <T, U extends Comparable<U>> U min(Function<? super T, ? extends U> f, Iterable<T> xs) {
