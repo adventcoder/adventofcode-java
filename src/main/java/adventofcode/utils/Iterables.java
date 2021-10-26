@@ -5,20 +5,19 @@ import java.util.function.*;
 
 public class Iterables {
     public static <T> T first(Iterable<T> xs) {
-        T first = null;
-        Iterator<T> it = xs.iterator();
-        if (it.hasNext()) {
-            first = it.next();
+        for (T x : xs) {
+            return x;
         }
-        return first;
+        return null;
     }
 
-    public static <T> T last(Iterable<T> xs) {
-        T last = null;
+    public static <T> T findFirst(Predicate<? super T> f, Iterable<T> xs) {
         for (T x : xs) {
-            last = x;
+            if (f.test(x)) {
+                return x;
+            }
         }
-        return last;
+        return null;
     }
 
     public static <T, U> Iterable<U> map(Function<? super T, ? extends U> f, Iterable<T> xs) {
@@ -45,7 +44,9 @@ public class Iterables {
 
     public static <T, U> List<U> collect(Function<? super T, ? extends U> f, Iterable<T> xs) {
         List<U> list = new ArrayList<>();
-        for (T x : xs) list.add(f.apply(x));
+        for (T x : xs) {
+            list.add(f.apply(x));
+        }
         return list;
     }
 
@@ -139,5 +140,15 @@ public class Iterables {
         int product = 1;
         for (T x : xs) product *= f.applyAsInt(x);
         return product;
+    }
+
+    public static <T> int tally(Predicate<? super T> f, Iterable<T> xs) {
+        int count = 0;
+        for (T x : xs) {
+            if (f.test(x)) {
+                count++;
+            }
+        }
+        return count;
     }
 }
