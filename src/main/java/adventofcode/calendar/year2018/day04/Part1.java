@@ -22,7 +22,7 @@ public class Part1 extends AbstractPart<Integer> {
             }
         });
         Integer guardId = argMax(sleepTotal::get, sleepTotal.keySet());
-        Integer minute = argMax((min) -> sleepFrequency.get(guardId)[min], new Range(60));
+        Integer minute = argMax((min) -> sleepFrequency.get(guardId)[min], Range.exclusive(60));
         return guardId * minute;
     }
 }

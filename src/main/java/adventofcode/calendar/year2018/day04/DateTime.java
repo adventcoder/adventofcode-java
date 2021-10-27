@@ -57,10 +57,6 @@ public class DateTime implements Comparable<DateTime> {
         return cmp;
     }
 
-    public DateTime truncateHour() {
-        return new DateTime(year, month, day, hour, 0);
-    }
-
     @Override
     public String toString() {
         return String.format("%04d-%02d-%02d %02d:%02d", year, month, day, hour, minute);

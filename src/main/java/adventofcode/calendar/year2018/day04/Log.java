@@ -28,21 +28,21 @@ public class Log {
     }
 
     public static void forEachNap(String input, BiConsumer<Integer, Range> action) {
-        Integer id = null;
+        Integer guardId = null;
         DateTime napStart = null;
         List<Log> logs = parseLogs(input);
         logs.sort(Comparator.comparing((log) -> log.ts));
         for (Log log : logs) {
             if (log.message.matches("Guard #\\d+ begins shift")) {
-                id = Integer.parseInt(log.message.substring(7, log.message.length() - 13));
+                guardId = Integer.parseInt(log.message.substring(7, log.message.length() - 13));
                 napStart = null;
             } else if (log.message.equals("falls asleep")) {
-                assert log.ts.hour == 0;
                 napStart = log.ts;
-            } else if (napStart != null && log.message.equals("wakes up")) {
-                assert log.ts.truncateHour().equals(napStart.truncateHour());
-                // System.out.println("Guard #" + id + " slept for " + (log.instant.minute - sleepStart.minute) + " minutes from " + sleepStart.minute + " to " + log.instant.minute);
-                action.accept(id, new Range(napStart.minute, log.ts.minute));
+                assert napStart.hour == 0;
+            } else if (log.message.equals("wakes up") && napStart != null) {
+                DateTime napEnd = log.ts;
+                assert napEnd.hour == 0 && napEnd.day == napStart.day && napEnd.month == napStart.month && napEnd.year == napStart.year;
+                action.accept(guardId, Range.exclusive(napStart.minute, napEnd.minute));
             }
         }
     }

@@ -14,6 +14,14 @@ public class Vector2D {
         y = orig.y;
     }
 
+    public int x() {
+        return x;
+    }
+
+    public int y() {
+        return y;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return (this == obj) || (obj instanceof Vector2D && equals((Vector2D) obj));
