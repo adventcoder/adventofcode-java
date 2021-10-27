@@ -5,16 +5,16 @@ import java.util.StringTokenizer;
 
 public class Tree {
     private final Tree[] children;
-    private final int[] entries;
+    private final int[] data;
 
     public Tree(StringTokenizer tokens) {
         children = new Tree[Integer.parseInt(tokens.nextToken())];
-        entries = new int[Integer.parseInt(tokens.nextToken())];
+        data = new int[Integer.parseInt(tokens.nextToken())];
         for (int i = 0; i < children.length; i++) {
             children[i] = new Tree(tokens);
         }
-        for (int i = 0; i < entries.length; i++) {
-            entries[i] = Integer.parseInt(tokens.nextToken());
+        for (int i = 0; i < data.length; i++) {
+            data[i] = Integer.parseInt(tokens.nextToken());
         }
     }
 
@@ -23,7 +23,7 @@ public class Tree {
         for (Tree child : children) {
             sum += child.checksum();
         }
-        for (int n : entries) {
+        for (int n : data) {
             sum += n;
         }
         return sum;
@@ -32,13 +32,13 @@ public class Tree {
     public int value() {
         int sum = 0;
         if (children.length == 0) {
-            for (int n : entries) {
+            for (int n : data) {
                 sum += n;
             }
         } else {
             int[] values = new int[children.length];
             Arrays.fill(values, -1);
-            for (int n : entries) {
+            for (int n : data) {
                 int i = n - 1;
                 if (i >= 0 && i < children.length) {
                     if (values[i] == -1) {
