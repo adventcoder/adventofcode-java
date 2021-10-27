@@ -50,17 +50,25 @@ public class Iterables {
         return list;
     }
 
+    public static <T extends Comparable<T>> T min(Iterable<T> xs) {
+        return min(Function.identity(), xs);
+    }
+
     public static <T, U extends Comparable<U>> U min(Function<? super T, ? extends U> f, Iterable<T> xs) {
         U xMin = null;
         Iterator<T> it = xs.iterator();
         if (it.hasNext()) {
             xMin = f.apply(it.next());
-            do {
-                U curr = f.apply(it.next());
-                if (curr.compareTo(xMin) < 0) xMin = curr;
-            } while (it.hasNext());
+            while (it.hasNext()) {
+                U x = f.apply(it.next());
+                if (x.compareTo(xMin) < 0) xMin = x;
+            }
         }
         return xMin;
+    }
+
+    public static <T extends Comparable<T>> T max(Iterable<T> xs) {
+        return max(Function.identity(), xs);
     }
 
     public static <T, U extends Comparable<U>> U max(Function<? super T, ? extends U> f, Iterable<T> xs) {
@@ -68,10 +76,10 @@ public class Iterables {
         Iterator<T> it = xs.iterator();
         if (it.hasNext()) {
             xMax = f.apply(it.next());
-            do {
+            while (it.hasNext()) {
                 U x = f.apply(it.next());
                 if (x.compareTo(xMax) > 0) xMax = x;
-            } while (it.hasNext());
+            }
         }
         return xMax;
     }
