@@ -1,6 +1,17 @@
 package adventofcode.utils;
 
+import java.util.function.LongBinaryOperator;
+
 public class IntArray {
+    public static Long reduce(LongBinaryOperator op, long[] array) {
+        if (array.length == 0) return null;
+        long acc = array[0];
+        for (int i = 1; i < array.length; i++) {
+            acc = op.applyAsLong(acc, array[i]);
+        }
+        return acc;
+    }
+
     public static void swap(int[] array, int i, int j) {
         int temp = array[i];
         array[i] = array[j];
