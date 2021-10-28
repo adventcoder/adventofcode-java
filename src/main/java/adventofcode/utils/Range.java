@@ -1,5 +1,6 @@
 package adventofcode.utils;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public class Range implements Iterable<Integer> {
@@ -73,6 +74,10 @@ public class Range implements Iterable<Integer> {
     public void addAll(Range ns) {
         min = Math.min(min, ns.min);
         max = Math.max(max, ns.max);
+    }
+
+    public void addAll(Collection<Integer> ns) {
+        ns.forEach(this::add);
     }
 
     public void retain(int n) {
