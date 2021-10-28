@@ -5,7 +5,6 @@ import adventofcode.utils.Range;
 import adventofcode.utils.Vector2D;
 
 import java.util.*;
-import java.util.function.ToIntFunction;
 
 import static adventofcode.utils.Iterables.sum;
 
@@ -40,17 +39,11 @@ public class Part2 extends AbstractPart<Integer> {
     }
 
     private Vector2D centroid(List<Vector2D> points) {
-        return new Vector2D(median(points, Vector2D::x), median(points, Vector2D::y));
-    }
-
-    private <T> int median(List<T> list, ToIntFunction<T> f) {
-        list.sort(Comparator.comparingInt(f));
-        int i = list.size() / 2;
-        if (list.size() % 2 == 0) {
-            return (f.applyAsInt(list.get(i - 1)) + f.applyAsInt(list.get(i))) / 2;
-        } else {
-            return f.applyAsInt(list.get(i));
-        }
+        points.sort(Comparator.comparing((p) -> p.x));
+        int x = points.get(points.size() / 2).x;
+        points.sort(Comparator.comparing((p) -> p.y));
+        int y = points.get(points.size() / 2).y;
+        return new Vector2D(x, y);
     }
 
     private int totalDistance(List<Vector2D> as, Vector2D b) {

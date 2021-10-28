@@ -14,14 +14,6 @@ public class Vector2D {
         y = orig.y;
     }
 
-    public int x() {
-        return x;
-    }
-
-    public int y() {
-        return y;
-    }
-
     @Override
     public boolean equals(Object obj) {
         return (this == obj) || (obj instanceof Vector2D && equals((Vector2D) obj));
@@ -45,10 +37,6 @@ public class Vector2D {
         return Math.abs(x) + Math.abs(y);
     }
 
-    public int magnitudeSquared() {
-        return x * x + y * y;
-    }
-
     public void negate() {
         x = -x;
         y = -y;
@@ -63,6 +51,11 @@ public class Vector2D {
         y += vec.y;
     }
 
+    public void addEq(Vector2D vec, int n) {
+        x += vec.x * n;
+        y += vec.y * n;
+    }
+
     public Vector2D sub(Vector2D vec) {
         return new Vector2D(x - vec.x, y - vec.y);
     }
@@ -70,6 +63,11 @@ public class Vector2D {
     public void subEq(Vector2D vec) {
         x -= vec.x;
         y -= vec.y;
+    }
+
+    public void subEq(Vector2D vec, int n) {
+        x -= vec.x * n;
+        y -= vec.y * n;
     }
 
     public void mulEq(int n) {

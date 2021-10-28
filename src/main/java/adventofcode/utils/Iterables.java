@@ -50,6 +50,21 @@ public class Iterables {
         return list;
     }
 
+    public static <T> int[] collect(ToIntFunction<? super T> f, Iterable<T> xs) {
+        int[] array = new int[2];
+        int size = 0;
+        for (T x : xs) {
+            if (size == array.length) {
+                array = Arrays.copyOf(array, size * 2);
+            }
+            array[size++] = f.applyAsInt(x);
+        }
+        if (size < array.length) {
+            array = Arrays.copyOf(array, size);
+        }
+        return array;
+    }
+
     public static <T extends Comparable<T>> T min(Iterable<T> xs) {
         return min(Function.identity(), xs);
     }
@@ -136,6 +151,15 @@ public class Iterables {
             if (!f.test(x)) return false;
         }
         return true;
+    }
+
+    public static <T> int reduce(IntBinaryOperator op, ToIntFunction<? super T> f, Iterable<T> xs) {
+        Iterator<T> it = xs.iterator();
+        int acc = f.applyAsInt(it.next());
+        while (it.hasNext()) {
+            acc = op.applyAsInt(acc, f.applyAsInt(it.next()));
+        }
+        return acc;
     }
 
     public static <T> int sum(ToIntFunction<? super T> f, Iterable<T> xs) {
