@@ -8,8 +8,6 @@ import java.util.function.BiConsumer;
 import static adventofcode.utils.Iterables.max;
 
 public class Graph {
-    private static final List<Vector2D> dirs = Arrays.asList(new Vector2D(0, -1), new Vector2D(0, 1), new Vector2D(-1, 0), new Vector2D(1, 0));
-
     private Map<Character, Vector2D> nodes = new HashMap<>();
     private Map<Character, Map<Character, Edge>> edges = new HashMap<>();
 
@@ -44,8 +42,7 @@ public class Graph {
         queue.add(from);
         while (!queue.isEmpty()) {
             Vector2D pos = queue.remove();
-            for (Vector2D dir : dirs) {
-                Vector2D newPos = pos.add(dir);
+            for (Vector2D newPos : pos.neighbours()) {
                 if (getChar(grid, newPos) == '#') continue;
                 if (edges.containsKey(newPos)) continue;
                 edges.put(newPos, edges.get(pos).add(getChar(grid, newPos)));

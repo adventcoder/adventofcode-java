@@ -22,7 +22,7 @@ public class Track {
 
     public void tick() {
         List<Vector2D> positions = new ArrayList<>(alive.keySet());
-        positions.sort(this::comparePositions);
+        positions.sort(Vector2D::compareReadingOrder);
         for (Vector2D pos : positions) {
             if (alive.containsKey(pos)) {
                 Cart cart = alive.remove(pos);
@@ -35,13 +35,5 @@ public class Track {
                 }
             }
         }
-    }
-
-    private int comparePositions(Vector2D a, Vector2D b) {
-        int cmp = Integer.compare(a.y, b.y);
-        if (cmp == 0) {
-            cmp = Integer.compare(a.x, b.x);
-        }
-        return cmp;
     }
 }

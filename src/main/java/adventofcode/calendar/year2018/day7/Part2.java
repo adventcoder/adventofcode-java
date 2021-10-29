@@ -23,7 +23,7 @@ public class Part2 extends AbstractPart<Integer> {
                 String step = available.remove();
                 wip.put(step, 61 + step.charAt(0) - 'A');
             }
-            int dt = min(wip.values());
+            int dt = min(Comparator.naturalOrder(), wip.values());
             Iterator<String> it = wip.keySet().iterator();
             while (it.hasNext()) {
                 String step = it.next();

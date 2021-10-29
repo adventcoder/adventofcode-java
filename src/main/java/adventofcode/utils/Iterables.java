@@ -65,8 +65,17 @@ public class Iterables {
         return array;
     }
 
-    public static <T extends Comparable<T>> T min(Iterable<T> xs) {
-        return min(Function.identity(), xs);
+    public static <T> T min(Comparator<T> cmp, Iterable<T> xs) {
+        T xMin = null;
+        Iterator<T> it = xs.iterator();
+        if (it.hasNext()) {
+            xMin = it.next();
+            while (it.hasNext()) {
+                T x = it.next();
+                if (cmp.compare(x, xMin) < 0) xMin = x;
+            }
+        }
+        return xMin;
     }
 
     public static <T, U extends Comparable<U>> U min(Function<? super T, ? extends U> f, Iterable<T> xs) {
@@ -82,8 +91,17 @@ public class Iterables {
         return xMin;
     }
 
-    public static <T extends Comparable<T>> T max(Iterable<T> xs) {
-        return max(Function.identity(), xs);
+    public static <T> T max(Comparator<T> cmp, Iterable<T> xs) {
+        T xMax = null;
+        Iterator<T> it = xs.iterator();
+        if (it.hasNext()) {
+            xMax = it.next();
+            while (it.hasNext()) {
+                T x = it.next();
+                if (cmp.compare(x, xMax) > 0) xMax = x;
+            }
+        }
+        return xMax;
     }
 
     public static <T, U extends Comparable<U>> U max(Function<? super T, ? extends U> f, Iterable<T> xs) {

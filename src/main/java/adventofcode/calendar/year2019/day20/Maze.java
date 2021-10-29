@@ -6,8 +6,6 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Maze {
-    private static final List<Vector2D> dirs = Arrays.asList(new Vector2D(0, -1), new Vector2D(0, 1), new Vector2D(-1, 0), new Vector2D(1, 0));
-
     private final String[] grid;
     private final Map<Portal, Vector2D> portals = new HashMap<>();
 
@@ -104,8 +102,7 @@ public class Maze {
     }
 
     public void forEachNeighbour(Vector2D pos, boolean includePortals, Consumer<Vector2D> action) {
-        for (Vector2D dir : dirs) {
-            Vector2D newPos = pos.add(dir);
+        for (Vector2D newPos : pos.neighbours()) {
             if (isSpace(newPos.x, newPos.y)) {
                 action.accept(newPos);
             }

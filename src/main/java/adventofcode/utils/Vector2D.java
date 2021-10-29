@@ -1,5 +1,11 @@
 package adventofcode.utils;
 
+import adventofcode.calendar.year2019.day12.Vector;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Vector2D {
     public int x;
     public int y;
@@ -118,5 +124,33 @@ public class Vector2D {
         double angle = Math.atan2(cross(vec), dot(vec));
         if (angle < 0.0) angle += 2 * Math.PI;
         return angle;
+    }
+
+    public List<Vector2D> neighbours() {
+        return Arrays.asList(up(), left(), right(), down());
+    }
+
+    public Vector2D up() {
+        return new Vector2D(x, y - 1);
+    }
+
+    public Vector2D down() {
+        return new Vector2D(x, y + 1);
+    }
+
+    public Vector2D left() {
+        return new Vector2D(x - 1, y);
+    }
+
+    public Vector2D right() {
+        return new Vector2D(x + 1, y);
+    }
+
+    public int compareReadingOrder(Vector2D other) {
+        int cmp = Integer.compare(y, other.y);
+        if (cmp == 0) {
+            cmp = Integer.compare(x, other.x);
+        }
+        return cmp;
     }
 }
