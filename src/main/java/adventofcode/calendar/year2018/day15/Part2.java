@@ -5,17 +5,16 @@ import adventofcode.framework.AbstractPart;
 public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
-        for (int atk = 4; ; atk++) {
-            Combat combat = new Combat(input, 3, atk);
-            int elfCount = combat.countAttackTargets('G');
+        Combat combat = new Combat(input);
+        int elfCount = combat.countUnits('E');
+        for (int attackPower = 4; ; attackPower++) {
+            Combat trial = combat.withElfAttackPower(attackPower);
             int rounds = 0;
-            while (combat.completeRound()) {
+            while (trial.countUnits('E') == elfCount) {
+                if (!trial.completeRound()) {
+                    return rounds * trial.totalHp();
+                }
                 rounds++;
-            }
-            if (combat.countAttackTargets('G') == elfCount) {
-                System.out.println("Attack: " + atk);
-                System.out.println("Rounds: " + rounds);
-                return rounds * combat.totalHp();
             }
         }
     }
