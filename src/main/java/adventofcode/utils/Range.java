@@ -23,6 +23,10 @@ public class Range implements Iterable<Integer> {
     public int min;
     public int max;
 
+    public Range(int n) {
+        this(n, n);
+    }
+
     public Range(int min, int max) {
         this.min = min;
         this.max = max;
