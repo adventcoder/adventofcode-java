@@ -3,6 +3,25 @@ package adventofcode.utils;
 import java.util.function.LongBinaryOperator;
 
 public class IntArray {
+    public static int[] parse(String str, String prefix, String separator, String suffix) {
+        if (prefix != null && str.startsWith(prefix)) {
+            str = str.substring(prefix.length());
+        }
+        if (suffix != null && str.endsWith(suffix)) {
+            str = str.substring(0, str.length() - suffix.length());
+        }
+        return parse(str, separator);
+    }
+
+    public static int[] parse(String str, String separator) {
+        String[] tokens = str.split(separator);
+        int[] array = new int[tokens.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = Integer.parseInt(tokens[i]);
+        }
+        return array;
+    }
+
     public static Long reduce(LongBinaryOperator op, long[] array) {
         if (array.length == 0) return null;
         long acc = array[0];

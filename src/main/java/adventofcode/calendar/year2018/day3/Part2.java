@@ -1,6 +1,7 @@
 package adventofcode.calendar.year2018.day3;
 
 import adventofcode.framework.AbstractPart;
+import adventofcode.utils.Iterables;
 
 import java.util.*;
 
