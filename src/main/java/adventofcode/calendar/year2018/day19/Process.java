@@ -27,6 +27,10 @@ public class Process {
         }
     }
 
+    public int[] currentInstruction() {
+        return instructions.get(ip);
+    }
+
     public boolean running() {
         return ip >= 0 && ip < instructions.size();
     }

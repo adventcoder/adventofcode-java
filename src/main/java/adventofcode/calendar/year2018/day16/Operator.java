@@ -5,7 +5,7 @@ import java.util.List;
 
 @FunctionalInterface
 public interface Operator {
-    List<Operator> values = Arrays.asList(Operator::addr, Operator::addi, Operator::mulr, Operator::muli, Operator::banr, Operator::bani, Operator::borr, Operator::bori, Operator::setr, Operator::seti, Operator::gtir, Operator::gtri, Operator::gtrr, Operator::eqri, Operator::eqir, Operator::eqrr);
+    List<Operator> values = Arrays.asList(Operator::addr, Operator::addi, Operator::mulr, Operator::muli, Operator::banr, Operator::bani, Operator::borr, Operator::bori, Operator::setr, Operator::seti, Operator::gtir, Operator::gtri, Operator::gtrr, Operator::eqir, Operator::eqri, Operator::eqrr);
 
     void apply(int[] instr, int[] reg);
 
