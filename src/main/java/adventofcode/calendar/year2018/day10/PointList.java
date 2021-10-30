@@ -64,8 +64,13 @@ public class PointList {
     // f'(t) = 2 var(A,B) + 2 var(B) t
     //    t' = -var(A,B) / var(B)
     //
-    public double minimizeVariance() {
+    public double minimizeVarianceApprox() {
         return -variance(pos, vel) / variance(vel, vel);
+    }
+
+    public int minimizeVariance() {
+        int t = (int) minimizeVarianceApprox();
+        return variance(t) < variance(t + 1) ? t : t + 1;
     }
 
     @Override

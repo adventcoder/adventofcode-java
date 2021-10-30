@@ -5,7 +5,6 @@ import adventofcode.framework.AbstractPart;
 public class Part2 extends AbstractPart<Integer> {
     @Override
     public Integer solve(String input) {
-        // This is slow...
         StringBuilder scores = new StringBuilder("37");
         int i = 0;
         int j = 1;
