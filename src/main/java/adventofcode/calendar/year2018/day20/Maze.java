@@ -3,14 +3,72 @@ package adventofcode.calendar.year2018.day20;
 import adventofcode.utils.Range;
 import adventofcode.utils.Vector2D;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.*;
 
 public class Maze {
-    private final Map<Vector2D, Set<Vector2D>> neighbours = new HashMap<>();
+    private static final Map<Character, Vector2D> dirs = Map.ofEntries(
+            Map.entry('N', new Vector2D(0, -1)),
+            Map.entry('S', new Vector2D(0, 1)),
+            Map.entry('W', new Vector2D(-1, 0)),
+            Map.entry('E', new Vector2D(1, 0)));
 
-    public Maze(String input, Vector2D start) {
-        Regex.compile(input).addDoors(Collections.singleton(start), this);
+    public Maze(String regex, Vector2D start) {
+        CharacterIterator it = new StringCharacterIterator(regex);
+        match(it, '^');
+        processSequence(it, Collections.singleton(start));
+        match(it, '$');
     }
+
+    private Set<Vector2D> processSequence(CharacterIterator it, Set<Vector2D> rooms) {
+        while (dirs.containsKey(it.current()) || it.current() == '(') {
+            if (dirs.containsKey(it.current())) {
+                rooms = processDoor(it, rooms);
+            } else {
+                rooms = processBranch(it, rooms);
+            }
+        }
+        return rooms;
+    }
+
+    private Set<Vector2D> processBranch(CharacterIterator it, Set<Vector2D> rooms) {
+        match(it, '(');
+        Set<Vector2D> newRooms = processSequence(it, rooms);
+        while (tryMatch(it, '|')) {
+            newRooms.addAll(processSequence(it, rooms));
+        }
+        match(it, ')');
+        return newRooms;
+    }
+
+    private Set<Vector2D> processDoor(CharacterIterator it, Set<Vector2D> rooms) {
+        Vector2D dir = dirs.get(it.current());
+        it.next();
+        Set<Vector2D> newRooms = new HashSet<>();
+        for (Vector2D room : rooms) {
+            Vector2D newRoom = room.add(dir);
+            addDoor(room, newRoom);
+            newRooms.add(newRoom);
+        }
+        return newRooms;
+    }
+
+    private static void match(CharacterIterator it, char c) {
+        if (!tryMatch(it, c)) {
+            throw new InputMismatchException(Character.toString(it.current()));
+        }
+    }
+
+    private static boolean tryMatch(CharacterIterator it, char c) {
+        if (it.current() == c) {
+            it.next();
+            return true;
+        }
+        return false;
+    }
+
+    private final Map<Vector2D, Set<Vector2D>> neighbours = new HashMap<>();
 
     public void addDoor(Vector2D a, Vector2D b) {
         if (!neighbours.containsKey(a)) neighbours.put(a, new HashSet<>());
