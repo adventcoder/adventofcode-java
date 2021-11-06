@@ -1,8 +1,30 @@
 package adventofcode.calendar.year2017.day10;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+
 public class KnotHash {
-    private static final String salt = new String(new char[] { 17, 31, 73, 47, 23 });
-    private static final String hexChars = "0123456789abcdef";
+    private static final byte[] suffix = { 17, 31, 73, 47, 23 };
+
+    public static KnotHash standard(String input) {
+        KnotHash hash = new KnotHash(getLengths(input));
+        for (int i = 0; i < 64; i++) {
+            hash.round();
+        }
+        return hash;
+    }
+
+    private static int[] getLengths(String input) {
+        int[] lengths = new int[input.length() + suffix.length];
+        int i = 0;
+        for (byte b : input.getBytes(StandardCharsets.US_ASCII)) {
+            lengths[i++] = b;
+        }
+        for (byte b : suffix) {
+            lengths[i++] = b;
+        }
+        return lengths;
+    }
 
     private final int[] lengths;
     private final byte[] hash = new byte[256];
@@ -14,20 +36,6 @@ public class KnotHash {
         for (int i = 0; i < hash.length; i++) {
             hash[i] = (byte) i;
         }
-    }
-
-    public KnotHash(String input) {
-        this(getLengths(input + salt));
-    }
-
-    private static int[] getLengths(String input) {
-        int[] lengths = new int[input.length()];
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            if (c >= 0x80) throw new IllegalArgumentException();
-            lengths[i] = c;
-        }
-        return lengths;
     }
 
     public int sparseByte(int i) {
@@ -42,15 +50,31 @@ public class KnotHash {
         return b;
     }
 
-    @Override
-    public String toString() {
-        char[] chars = new char[32];
+    public String toHexString() {
+        StringBuilder builder = new StringBuilder(32);
+        for (int i = 0; i < 16; i++) {
+            builder.append(Integer.toHexString(denseByte(i)));
+        }
+        return builder.toString();
+    }
+
+    public byte[] toBitArray() {
+        byte[] bits = new byte[128];
         for (int i = 0; i < 16; i++) {
             int b = denseByte(i);
-            chars[2 * i] = hexChars.charAt(b >>> 4);
-            chars[2 * i + 1] = hexChars.charAt(b & 0xF);
+            for (int j = 0; j < 8; j++) {
+                bits[i * 8 + j] = (byte) ((b >>> (7 - j)) & 0x1);
+            }
         }
-        return new String(chars);
+        return bits;
+    }
+
+    public BigInteger toBigInteger() {
+        byte[] bytes = new byte[17];
+        for (int i = 1; i < bytes.length; i++) {
+            bytes[i] = (byte) denseByte(i - 1);
+        }
+        return new BigInteger(bytes);
     }
 
     public void round() {
